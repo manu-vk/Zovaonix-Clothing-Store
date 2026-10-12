@@ -42,8 +42,8 @@ const ProductPage = () => {
       <div className='m-5 py-5'>
 
         <div className="ml-4 sm:ml-6 md:ml-9">
-          <h1 className="text-2xl sm:text-3xl md:text-[35px] font-semibold">
-            All Products
+          <h1 className="text-2xl sm:text-3xl md:text-[35px] font-rethink font-bold text-[#800020]">
+            Sales
           </h1>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-3">
@@ -51,7 +51,7 @@ const ProductPage = () => {
             <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 font-medium">
               <Link to="/">Home</Link>
               <span>{'>'}</span>
-              <Link to="/products">Products</Link>
+              <Link to="/products">Sales</Link>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -70,10 +70,10 @@ const ProductPage = () => {
 
               <button
                 onClick={() => setShowFilter(!showFilter)}
-                className="flex items-center gap-2 border rounded-full px-3 py-1"
+                className="flex items-center gap-2 border rounded-full px-3 py-1 text-white"
               >
                 Filter
-                <img src={assets.filterIcon} alt="" className="w-4 h-4" />
+                <img src={assets.filterIcon} alt="" className="w-4 h-4 brightness-0 invert" />
               </button>
             </div>
 
@@ -82,7 +82,7 @@ const ProductPage = () => {
 
 
         <div className='flex justify-center'>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 sm:gap-5 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-2 sm:gap-5 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
             {filteredProducts.map(product => (
               <ProductCard key={product._id} product={product} />
             ))}

@@ -42,10 +42,13 @@ import ordersIcon from './icons/ordersIcon.png'
 import customersIcon from './icons/customersIcon.png'
 import categoriesIcon from './icons/categoriesIcon.png'
 
+import clothingBanner1 from './images/clothingbanner1.png'
+import clothingBanner2 from './images/clothingBanner2.png'
 import imageOne from './images/ec25b4b5e08d65f5173c15e1f91cde6f71eb4f06.jpg'
 import imageTwo from './images/9c74020bea95942fe85eb1d5ca6068cd932290d5.jpg'
 import imageThree from './images/9a95452ac3a33a3c661ab148aa613e68717d0300.jpg'
 import imageFour from './images/345da007b677d098e336f1e606865c1d044da12d.jpg'
+
 
 // All Products
 import productOne from './products/37dcb4eb242b0abd5729f79a8ed1bd6e8d1fa0e6.png'
@@ -140,6 +143,7 @@ export const assets = {
     imageTwo,
     imageThree,
     imageFour,
+    productOne,
     productTwo,
     productThree,
     productFour,
@@ -151,6 +155,8 @@ export const assets = {
     productTFifteen,
     productSixteen,
     productTwenteen,
+    clothingBanner1,
+    clothingBanner2,
 }
 
 export const ourProducts = [
@@ -309,8 +315,8 @@ export const ourProducts = [
 export const customerFakeData = [
   {
     id: 'c78ed31f-4d8b-447e-8985-d1a4e1521754',
-    userName: 'Adil',
-    email: 'adil@gmail.com',
+    userName: 'manu',
+    email: 'manu@gmail.com',
     phoneNum: 8848017132,
     address: 'House No. 12/45, Near Sreekrishna Temple, Near Sreekrishna Temple, Ernakulam, Kerala, India',
     banStatus: false

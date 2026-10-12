@@ -21,14 +21,14 @@ const Navbar = () => {
         <nav className="z-50 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
 
             <NavLink to='/'>
-                <h3 className='text-[#00354B] font-rethink font-bold text-2xl'>Fragranzia</h3>
+                <h3 className='text-[#6e1f33] font-rethink font-bold text-2xl'>Zovaonyx</h3>
             </NavLink>
 
             {/* Desktop Menu */}
             <div className="hidden sm:flex items-center gap-8">
                 <Link to='/'>Home</Link>
                 <Link to='/products'>Products</Link>
-                <Link to='/gifting'>Gifting</Link>
+                {/* <Link to='/gifting'>Gifting</Link> */}
                 <Link to='/about'>About</Link>
 
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full shadow-[0_0_0_1px_#2424243c]">
@@ -156,7 +156,7 @@ const Navbar = () => {
             </div>
 
             <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
-                
+
                 <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="21" height="1.5" rx=".75" fill="#426287" />
                     <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#426287" />
@@ -187,6 +187,71 @@ const Navbar = () => {
                     )}
                 </div>
             )}
+            {/* --------------------------------------------------- */}
+            {/* Mobile Bottom Navigation */}
+            <div className="sm:hidden fixed bottom-0 left-0 w-full z-[100] bg-[#800020]  border-t border-[#800020]/20 shadow-[0_-3px_12px_rgba(0,0,0,0.08)]  rounded-t-xl">
+                <div className="flex items-center justify-around py-3">
+
+                    <Link to="/" className="flex items-center justify-center">
+                        <img src={assets.homeIcon} alt="Home" className="w-5 h-5 brightness-0 invert" />
+                    </Link>
+
+
+
+                    <Link
+                        to={user ? "/cart" : "#"}
+                        onClick={(e) => {
+                            if (!user) {
+                                e.preventDefault()
+                                toast.error("Please login to continue")
+                                setTimeout(() => navigate("/login"), 1000)
+                            }
+                        }}
+                        className="relative flex items-center justify-center"
+                    >
+                        <img src={assets.cartIcon} alt="Cart" className="w-5 h-5 brightness-0 invert" />
+                        {getCartCount() > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-[#800020] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                                {getCartCount()}
+                            </span>
+                        )}
+                    </Link>
+
+                    <Link
+                        to={user ? "/wishlist" : "#"}
+                        onClick={(e) => {
+                            if (!user) {
+                                e.preventDefault()
+                                toast.error("Please login to continue")
+                                setTimeout(() => navigate("/login"), 1000)
+                            }
+                        }}
+                        className="relative flex items-center justify-center"
+                    >
+                        <img src={assets.wishFalseIcon} alt="Wishlist" className="w-5 h-5 brightness-0 invert" />
+                        {getWishlistCount() > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-[#800020] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                                {getWishlistCount()}
+                            </span>
+                        )}
+                    </Link>
+
+                    <Link
+                        to={user ? "/profile" : "#"}
+                        onClick={(e) => {
+                            if (!user) {
+                                e.preventDefault()
+                                toast.error("Please login to continue")
+                                setTimeout(() => navigate("/login"), 1000)
+                            }
+                        }}
+                        className="flex items-center justify-center"
+                    >
+                        <img src={assets.profileIcon} alt="Profile" className="w-5 h-5 brightness-0 invert" />
+                    </Link>
+
+                </div>
+            </div>
 
         </nav>
     )

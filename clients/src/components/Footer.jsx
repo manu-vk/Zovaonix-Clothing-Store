@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
     return (
-        <footer className="bg-[#8BB8BE] w-full">
+        <footer className="bg-[#A83250]  w-full">
 
             <div className="px-6 py-10 grid grid-cols-1 lg:flex lg:justify-around gap-8">
 
                 <div>
-                    <h3 className="text-[#00354B] font-rethink font-bold text-3xl">Fragranzia</h3>
+                    <h3 className="text- #c54968 font-rethink font-bold text-3xl">Zovaonyx</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
                         <ul className="space-y-1">
-                            <li className="font-bold">Pages</li>
+                            <li className="font-bold text-#9e2543">Pages</li>
                             <li><Link to='/'>Home</Link></li>
                             <li><Link to='/products'>Products</Link></li>
                             <li><Link to='/gifting'>Gifting</Link></li>
@@ -26,7 +26,7 @@ const Footer = () => {
 
                     <div>
                         <ul className="space-y-1">
-                            <li className="font-bold">Quick Links</li>
+                            <li className="font-bold text-#9e2543">Quick Links</li>
                             <li>Privacy policy</li>
                             <li>Terms and conditions</li>
                             <li>FAQs</li>
@@ -36,15 +36,15 @@ const Footer = () => {
 
                     <div>
                         <ul className="space-y-1">
-                            <li>ftrafurniture@gmail.com</li>
+                            <li>zovaonyx1@gmail.com</li>
                             <li>+91 9876543210</li>
-                            <li className="font-bold">Social Media</li>
+                            <li className="font-bold text-#9e2543">Social Media</li>
                             <div className='flex justify-start gap-1'>
                                 <img src={assets.instagramIcon} alt="" className='w-5 h-5' />
-                                <img src={assets.facebookIcon} alt="" className='w-5 h-5'  />
+                                {/* <img src={assets.facebookIcon} alt="" className='w-5 h-5'  />
                                 <img src={assets.twitterIcon} alt="" className='w-5 h-5'  />
                                 <img src={assets.youtubeIcon} alt="" className='w-5 h-5'  />
-                                <img src={assets.linkedinIcon} alt="" className='w-5 h-5'  />
+                                <img src={assets.linkedinIcon} alt="" className='w-5 h-5'  /> */}
                             </div>
                         </ul>
                     </div>

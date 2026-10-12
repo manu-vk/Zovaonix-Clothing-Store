@@ -123,7 +123,7 @@ const ProductView = () => {
 
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p>{product.brand}</p>
-
+          
           <div className="flex gap-2 items-center mt-2">
             <span>{product.rating}</span>
             <span>({product.ratingCount})</span>
