@@ -90,7 +90,7 @@ const ProductPage = () => {
         </div>
 
         <div className='flex justify-center mt-3'>
-          <button className='w-[196px] cursor-pointer p-2 border-2 border-[#00354B] rounded-sm hover:bg-primary hover:text-white transition duration-300 ease-linear'>Load More</button>
+          <button className='w-[160px] cursor-pointer p-2 border-2 border-[#00354B] rounded-sm hover:bg-primary hover:text-white transition duration-300 ease-linear'>Load More</button>
         </div>
 
       </div>

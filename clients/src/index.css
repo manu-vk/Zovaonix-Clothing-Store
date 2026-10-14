@@ -26,16 +26,64 @@ body,
 }
 
 .mainbannerImg {
-  background-image:  url(/src/assets/images/clothingBanner1.png);
+  background-image: url('/src/assets/images/clothingBanner1.png');
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center 35%;
 }
 
 .mainSecbannerImg {
-  background-image:  url(/src/assets/images/clothingBanner2.png);
+  background-image: url('/src/assets/images/clothingBanner2.png');
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center 35%;
 }
+
+@media (max-width: 639px) {
+  .mainbannerImg,
+  .mainSecbannerImg {
+    background-position: center 25%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mainbannerImg,
+  .mainSecbannerImg {
+    background-position: center 40%;
+      background-size: 55% auto;
+  }
+ 
+}
+@media (min-width:362px) {
+  
+  .mainSecbannerImg {
+    background-position: center 50%;    
+  }
+ 
+}
+@media (min-width:600px) {
+  .mainbannerImg,
+  .mainSecbannerImg {
+    background-position: center 50%;    
+  }
+ 
+}
+@media (min-width:677px) {
+  .mainbannerImg,
+  .mainSecbannerImg {
+       background-size: 55% auto;
+  }
+ 
+}
+@media (min-width:581px) {
+  .mainbannerImg,
+  .mainSecbannerImg {
+       background-size: 55% auto;
+  }
+ 
+}
+
+
 
 .loginImgArea {
   background-image: url(/src/assets/images/9c74020bea95942fe85eb1d5ca6068cd932290d5.jpg);

@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { assets } from '../assets/assets'
@@ -5,44 +6,137 @@ import { assets } from '../assets/assets'
 const AboutPage = () => {
     return (
         <>
-            <title>Fragranzia About</title>
-            <div className='m-5 py-5'>
-                <div className='ml-9'>
-                    <h1 className='text-[35px] font-semibold'>About Fragraniza</h1>
+            <title>About Us | Zovaonyx</title>
 
-                    <div className='flex items-center gap-2 text-sm text-gray-500 font-medium'>
-                        <Link to='/'>Home</Link>
-                        <span>{'>'}</span>
-                        <Link to='/about'>About</Link>
+            <main className="px-4 py-8 sm:px-6 sm:py-10 md:px-8 md:py-12 lg:px-12 xl:px-20">
+                <div className="mx-auto max-w-7xl">
+
+                    {/* Page Heading */}
+                    <div className="mb-6 sm:mb-8">
+                        <h1 className="text-2xl font-semibold text-[#800020] sm:text-3xl md:text-4xl lg:text-5xl">
+                            About Zovaonyx
+                        </h1>
+
+                        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-medium text-gray-500 sm:text-sm">
+                            <Link to="/" className="transition hover:text-[#800020]">
+                                Home
+                            </Link>
+                            <span>{'>'}</span>
+                            <span className="text-[#800020]">About Us</span>
+                        </div>
                     </div>
+
+                    {/* About Section */}
+                    <section className="grid grid-cols-1 items-center gap-8 sm:gap-10 md:gap-12 lg:grid-cols-2 lg:gap-14">
+
+                        {/* About Content */}
+                        <div className="order-2 space-y-4 text-sm leading-7 text-gray-600 sm:space-y-5 sm:text-base sm:leading-8 lg:order-1">
+
+                            <h2 className="text-xl font-semibold text-gray-900 sm:text-2xl md:text-3xl">
+                                Fashion That Reflects You
+                            </h2>
+
+                            <p>
+                                Welcome to Zovaonyx, your destination for modern
+                                fashion and timeless style. We believe clothing is
+                                more than just what you wear — it is a way to express
+                                your personality, confidence, and individuality.
+                            </p>
+
+                            <p>
+                                Our collection brings together trendy designs,
+                                versatile everyday essentials, and stylish pieces
+                                for every occasion. Whether you are dressing up for
+                                a special event or keeping it casual, Zovaonyx helps
+                                you find styles that feel uniquely yours.
+                            </p>
+
+                            <p>
+                                We value style, comfort, and quality. Our goal is
+                                to make discovering your next favourite outfit an
+                                enjoyable experience, with fashion choices that fit
+                                your lifestyle and help you feel confident every day.
+                            </p>
+
+                            <p>
+                                At Zovaonyx, we believe great style should feel
+                                effortless. Explore our collection, discover new
+                                favourites, and make every outfit a reflection of you.
+                            </p>
+
+                            {/* Shop Button */}
+                            <div className="pt-2">
+                                <Link
+                                    to="/products"
+                                    className="inline-flex items-center justify-center rounded-md bg-[#800020] px-6 py-3 text-sm font-medium text-white transition duration-300 hover:bg-[#600018] sm:px-8 sm:text-base"
+                                >
+                                    Explore Our Collection
+                                    <span className="ml-2" aria-hidden="true">
+                                        →
+                                    </span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Responsive Images */}
+                        <div className="order-1 grid grid-cols-2 gap-3 sm:gap-5 lg:order-2 lg:gap-6">
+
+                            <div className="overflow-hidden rounded-tl-[40px] rounded-br-[40px] sm:rounded-tl-[60px] sm:rounded-br-[60px]">
+                                <img
+                                    src={assets.clothingBanner2}
+                                    alt="Discover stylish clothing at Zovaonyx"
+                                    className="h-44 w-full object-cover transition duration-500 hover:scale-105 sm:h-64 md:h-72 lg:h-80 xl:h-96"
+                                />
+                            </div>
+
+                            <div className="mt-6 overflow-hidden rounded-tr-[40px] rounded-bl-[40px] sm:mt-10 sm:rounded-tr-[60px] sm:rounded-bl-[60px]">
+                                <img
+                                    src={assets.clothingBanner1}
+                                    alt="Explore the Zovaonyx fashion collection"
+                                    className="h-44 w-full object-cover transition duration-500 hover:scale-105 sm:h-64 md:h-72 lg:h-80 xl:h-96"
+                                />
+                            </div>
+
+                        </div>
+                    </section>
+
+                    {/* Brand Values */}
+                    <section className="mt-12 grid grid-cols-1 gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5 lg:mt-20 lg:grid-cols-3">
+
+                        <div className="rounded-xl bg-gray-50 p-5 sm:p-6 md:p-8">
+                            <h3 className="mb-2 text-lg font-semibold text-[#800020] sm:text-xl">
+                                Timeless Style
+                            </h3>
+                            <p className="text-sm leading-7 text-gray-600 sm:text-base">
+                                Discover fashionable pieces that complement your
+                                personality and keep your wardrobe fresh.
+                            </p>
+                        </div>
+
+                        <div className="rounded-xl bg-gray-50 p-5 sm:p-6 md:p-8">
+                            <h3 className="mb-2 text-lg font-semibold text-[#800020] sm:text-xl">
+                                Comfort & Quality
+                            </h3>
+                            <p className="text-sm leading-7 text-gray-600 sm:text-base">
+                                Find styles designed to bring together everyday
+                                comfort and a great look.
+                            </p>
+                        </div>
+
+                        <div className="rounded-xl bg-gray-50 p-5 sm:p-6 md:p-8 sm:col-span-2 lg:col-span-1">
+                            <h3 className="mb-2 text-lg font-semibold text-[#800020] sm:text-xl">
+                                Your Unique Style
+                            </h3>
+                            <p className="text-sm leading-7 text-gray-600 sm:text-base">
+                                Express yourself with clothing that helps you feel
+                                confident, comfortable, and authentically you.
+                            </p>
+                        </div>
+
+                    </section>
+
                 </div>
-
-                <div className="flex flex-col lg:flex-row justify-between p-4 sm:p-6 lg:p-8 gap-6">
-
-                    <div className="flex flex-col gap-2 lg:flex-1 leading-[2rem]">
-                        <p>
-                            At Fragranzia, we believe that a perfume is more than just a scent—it's a story, an art, and a science combined to create memories that linger. Our journey began with a vision to craft exquisite fragrances that capture the essence of individuality and elevate every moment into something timeless.
-                        </p>
-                        <p>
-                            Guided by passion and precision, we source the finest ingredients from around the world to create perfumes that resonate with authenticity and luxury. Each bottle is a masterpiece, meticulously crafted to deliver an unparalleled sensory experience.
-                        </p>
-                        <p>
-                            Our commitment goes beyond creating fragrances. We aim to inspire confidence, evoke emotions, and celebrate uniqueness through every drop we produce. Fragranzia isn’t just a brand—it’s a celebration of you, your style, and your moments.
-                        </p>
-                        <p>
-                            With a legacy built on quality, artistry, and innovation, we invite you to explore our collection and find a scent that speaks your story
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col gap-4 items-center lg:items-end">
-                        <img src={assets.imageTwo} alt="" className="w-full max-w-[248px] sm:max-w-[248px] lg:max-w-[248px] h-44 sm:h-44 lg:h-44 object-cover rounded-[24px_0_24px_0]" />
-                        <img src={assets.imageOne} alt="" className="w-full max-w-[248px] sm:max-w-[248px] lg:max-w-[248px] h-44 sm:h-44 lg:h-44 object-cover rounded-[0_24px_0_24px]" />
-                    </div>
-
-                </div>
-
-
-            </div>
+            </main>
         </>
     )
 }

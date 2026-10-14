@@ -5,15 +5,15 @@ import { Link } from 'react-router-dom'
 
 const MainBanner = () => {
     const banners = [
-    {
-        id: 1,
-        bgClass: "mainSecbannerImg"
-    },
-    {
-        id: 2,
-        bgClass: "mainbannerImg"
-    }
-];
+        {
+            id: 1,
+            bgClass: "mainSecbannerImg"
+        },
+        {
+            id: 2,
+            bgClass: "mainbannerImg"
+        }
+    ];
 
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -26,18 +26,24 @@ const MainBanner = () => {
 
     return (
         <div className="relative overflow-hidden rounded-2xl">
-            <div className="flex h-[400px] md:h-[350px] transition-transform duration-1000 ease-out" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+            <div
+                className="flex h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] transition-transform duration-1000 ease-out"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
                 {banners.map((banner) => (
-                    <div key={banner.id} className={`w-full flex-shrink-0 ${banner.bgClass}`}>
-                        <div className="flex flex-col md:flex-row items-center justify-around h-full">
-                            <div className="flex flex-col text-center md:text-left items-center md:items-start pt-14 md:p-10">
-                                <h2 className="md:text-4xl text-2xl font-bold text-white">{banner.title}</h2>
-                                <p className="text-white mt-2">{banner.subtitle}</p>
-                                {/* <div className="mt-6"><Link to="/products"><button className="bg-white text-black hover:bg-white/70 px-7 py-2.5 rounded-md">Shop Now</button></Link></div> */}
-                            </div>
-                            <div className="relative flex justify-center items-center mt-6 md:mt-0">
-                                {/* <img src={banner.image} alt="spray" className="w-[220px] md:w-[320px] -rotate-[12deg]" />
-                                <img src={banner.image} alt="spray" className="absolute w-[180px] md:w-[250px] rotate-[18deg] z-10 top-14 left-4/5 -translate-x-1/2" /> */}
+                    <div
+                        key={banner.id}
+                        className={`w-full flex-shrink-0 ${banner.bgClass}`}
+                    >
+                        <div className="flex flex-col md:flex-row items-center justify-start md:justify-between h-full px-4 sm:px-8 md:px-12">
+                            <div className="flex flex-col text-center md:text-left items-center md:items-start pt-8 sm:pt-10 md:pt-0 max-w-full md:max-w-[48%]">
+                                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+                                    {banner.title}
+                                </h2>
+
+                                <p className="text-sm sm:text-base text-white mt-2">
+                                    {banner.subtitle}
+                                </p>
                             </div>
                         </div>
                     </div>

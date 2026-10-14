@@ -6,11 +6,11 @@ import axios from 'axios';
 
 export const AppContext = createContext();
 
-const API_REGISTER = 'https://fragranzia-w7my.onrender.com/api/user/register';
-const API_USER = 'https://fragranzia-w7my.onrender.com/api/user';
-const API_CATEGORY = 'https://fragranzia-w7my.onrender.com/api/category';
-const API_PRODUCT = 'https://fragranzia-w7my.onrender.com/api/product';
-const API_ORDER = 'https://fragranzia-w7my.onrender.com/api/order';
+const API_REGISTER = 'https://zovaonix-backend.onrender.com/api/user/register';
+const API_USER = 'https://zovaonix-backend.onrender.com/api/user';
+const API_CATEGORY = 'https://zovaonix-backend.onrender.com/api/category';
+const API_PRODUCT = 'https://zovaonix-backend.onrender.com/api/product';
+const API_ORDER = 'https://zovaonix-backend.onrender.com/api/order';
 
 export const AppContextProvider = ({ children }) => {
 
@@ -34,7 +34,7 @@ export const AppContextProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await axios.get("https://fragranzia-w7my.onrender.com/api/user/profile", {
+      const res = await axios.get("https://zovaonix-backend.onrender.com/api/user/profile", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -87,7 +87,7 @@ export const AppContextProvider = ({ children }) => {
       }
 
       const res = await axios.post(
-        "https://fragranzia-w7my.onrender.com/api/cart",
+        "https://zovaonix-backend.onrender.com/api/cart",
         { productId, quantity: 1 },
         {
           headers: {
@@ -114,7 +114,7 @@ export const AppContextProvider = ({ children }) => {
         return;
       }
 
-      const res = await axios.get("https://fragranzia-w7my.onrender.com/api/cart", {
+      const res = await axios.get("https://zovaonix-backend.onrender.com/api/cart", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -152,7 +152,7 @@ export const AppContextProvider = ({ children }) => {
         return;
       }
 
-      const res = await axios.put("https://fragranzia-w7my.onrender.com/api/cart", {
+      const res = await axios.put("https://zovaonix-backend.onrender.com/api/cart", {
         productId,
         quantity
       }, {
@@ -178,7 +178,7 @@ export const AppContextProvider = ({ children }) => {
         return;
       }
 
-      const res = await axios.delete(`https://fragranzia-w7my.onrender.com/api/cart/${productId}`, {
+      const res = await axios.delete(`https://zovaonix-backend.onrender.com/api/cart/${productId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -220,7 +220,7 @@ export const AppContextProvider = ({ children }) => {
       if (!token) return;
 
       const res = await axios.get(
-        "https://fragranzia-w7my.onrender.com/api/wishlist",
+        "https://zovaonix-backend.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -244,7 +244,7 @@ export const AppContextProvider = ({ children }) => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://fragranzia-w7my.onrender.com/api/wishlist",
+        "https://zovaonix-backend.onrender.com/api/wishlist",
         { productId },
         {
           headers: {
@@ -338,21 +338,60 @@ export const AppContextProvider = ({ children }) => {
   };
   // =========================================================================
   // Order functions
-  const createOrder = async (orderData) => {
-    try {
-      const token = localStorage.getItem("token");
+ 
+const createOrder = async (orderData) => {
+  try {
+    const token = localStorage.getItem("token");
 
-      if (!token) {
-        toast.error("Please login to place an order");
-        navigate("/login");
-        return;
-      }
+    if (!token) {
+      toast.error("Please login to place an order");
+      navigate("/login");
+      return null;
+    }
 
-      const res = await axios.post(API_ORDER, orderData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+    const res = await axios.post(API_ORDER, orderData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Order API response:", res.data);
+
+    await fetchUserOrders();
+    await fetchAllOrders();
+
+    return res.data;
+  
+} catch (error) {
+  console.error("Create order failed:", error);
+  console.error("Backend response:", error.response?.data);
+  console.error("HTTP status:", error.response?.status);
+
+  toast.error(
+    error.response?.data?.message ||
+    "Failed to place order"
+  );
+
+  return null;
+}
+
+};
+
+  // const createOrder = async (orderData) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+
+  //     if (!token) {
+  //       toast.error("Please login to place an order");
+  //       navigate("/login");
+  //       return;
+  //     }
+
+  //     const res = await axios.post(API_ORDER, orderData, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     });
       
 
       // if (response?.paymentMethod == "UPI") {
@@ -360,37 +399,60 @@ export const AppContextProvider = ({ children }) => {
 
       //     handlePayment(response?.razorpayOrder);
       //   }
-      // -----------------------------
+    
         
 
-      toast.success("Order placed successfully");
+  //     toast.success("Order placed successfully");
 
-      await fetchUserOrders();
-      await fetchAllOrders();
+  //     await fetchUserOrders();
+  //     await fetchAllOrders();
 
-      return res.data;
+  //     return res.data;
 
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to place order");
-    }
-  };
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || "Failed to place order");
+  //   }
+  // };
 
+  // const fetchAllOrders = async () => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+
+  //     const res = await axios.get(API_ORDER, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     console.log("All orders:", res.data);
+  //     setOrders(res.data);
+  //   } catch (error) {
+  //     console.log("Error fetching orders:", error.response?.data || error.message);
+  //   }
+  // };
   const fetchAllOrders = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await axios.get(API_ORDER, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("All orders:", res.data);
-      setOrders(res.data);
-    } catch (error) {
-      console.log("Error fetching orders:", error.response?.data || error.message);
+    if (!token) {
+      setOrders([]);
+      return;
     }
-  };
+
+    const res = await axios.get(API_ORDER, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setOrders(res.data);
+  } catch (error) {
+    console.log(
+      "Error fetching orders:",
+      error.response?.data || error.message
+    );
+  }
+};
 
   const fetchUserOrders = async () => {
     try {

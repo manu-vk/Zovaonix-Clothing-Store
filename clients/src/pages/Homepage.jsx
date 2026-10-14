@@ -55,7 +55,7 @@ const Homepage = () => {
 
         <div className='flex justify-center '>
            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-2 sm:gap-7 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
-            {featured.slice(1, 6).map(product => (
+            {featured.slice(0, 5).map(product => (
               <FeaturedCard key={product._id} product={product} />
             ))}
           </div>
@@ -63,7 +63,7 @@ const Homepage = () => {
 
         <div className='flex justify-center items-center mt-4 text-center lg:text-2xl md:text-[20px] sm:text-sm text-black'>
           <div className='max-w-md px-4'>
-            <p>Discover your style with Zovaonix — trendy fashion, timeless looks, and everyday essentials designed to make you stand out. ✨</p>
+            <p>Discover your style with Zovaonix — trendy fashion, timeless looks, and everyday essentials designed to make you stand out. </p>
           </div>
         </div>
 
@@ -127,7 +127,7 @@ const Homepage = () => {
 
         <div className='flex justify-center '>
          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-2 sm:gap-7 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
-            {featured.slice(1, 6).map(product => (
+            {featured.slice(0, 5).map(product => (
               <FeaturedCard key={product._id} product={product} />
             ))}
           </div>

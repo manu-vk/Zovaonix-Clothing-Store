@@ -52,10 +52,10 @@ const ProductView = () => {
   }, [product])
 
   return (
-    <div className='m-5 py-5'>
+    <div className='mx-3 py-4 sm:m-5 sm:py-5'>
 
       {/* BREADCRUMB */}
-      <div className='flex items-center gap-2 text-sm text-gray-500'>
+      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-500">
         <Link to="/">Home</Link>
         <span>&gt;</span>
         <Link to="/products">Products</Link>
@@ -63,10 +63,10 @@ const ProductView = () => {
         <span>{product.title}</span>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-16 mt-6">
+      <div className="flex flex-col md:flex-row gap-6 md:gap-16 mt-6">
 
         {/* LEFT SIDE */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full md:w-auto min-w-0">
 
           <div className="flex gap-3">
 
@@ -81,19 +81,25 @@ const ProductView = () => {
               ))}
             </div>
 
-            <div className="relative">
+            <div className="relative w-full sm:w-[400px]">
               <img
                 src={thumbnail}
-                className="w-[400px] h-[400px] object-cover border"
+                className="w-full aspect-square object-cover border"
               />
 
-              <div className="absolute top-2 right-2 flex flex-col gap-2">
+              <div className="absolute top-2 right-2 flex flex-col gap-1.5 sm:gap-2">
                 <img
                   onClick={() => handleWish(product._id)}
                   src={wishItems[product._id] ? assets.wishTrueIcon : assets.wishFalseIcon}
-                  className="w-6 h-6 cursor-pointer"
+                  className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
+                  alt="Wishlist"
                 />
-                <img src={assets.shareIcon} className="w-6 h-6 cursor-pointer" />
+
+                <img
+                  src={assets.shareIcon}
+                  className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
+                  alt="Share"
+                />
               </div>
             </div>
 
@@ -123,7 +129,10 @@ const ProductView = () => {
 
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p>{product.brand}</p>
-          
+          <p className="text-gray-600 text-sm mt-3 leading-6 whitespace-pre-line">
+            {product.description}
+          </p>
+
           <div className="flex gap-2 items-center mt-2">
             <span>{product.rating}</span>
             <span>({product.ratingCount})</span>

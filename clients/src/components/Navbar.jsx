@@ -169,22 +169,32 @@ const Navbar = () => {
                 <div className={`${open ? 'flex' : 'hidden'} absolute top-[57px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
                     <Link to='/' className='block'>Home</Link>
                     <Link to='/products' className='block'>Products</Link>
-                    {user &&
+                    {/* {user &&
                         <Link to='/cart' className='block'>Cart</Link>
-                    }
+                    } */}
                     <Link to='/gifting' className='block'>Gifting</Link>
                     <Link to='/about' className='block'>About</Link>
-                    <Link to='/profile'>Profile</Link>
+                    {/* <Link to='/profile'>Profile</Link> */}
 
                     {!user ? (
                         <button onClick={() => { setOpen(false); setShowUserLogin(true); }} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
                             Login
                         </button>
                     ) : (
-                        <button className='cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm'>
-                            logout
+
+
+                        <button
+                            onClick={() => {
+                                logout();
+                                setOpen(false);
+                            }}
+                            className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm"
+                        >
+                            Logout
                         </button>
                     )}
+
+
                 </div>
             )}
             {/* --------------------------------------------------- */}

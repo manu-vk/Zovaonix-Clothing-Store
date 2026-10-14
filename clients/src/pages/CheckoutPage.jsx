@@ -104,79 +104,82 @@ const CheckoutPage = () => {
     });
   };
 
-  const handlePayment = async (data) => {
-    try {
-      console.log("==== handlePayment 1");
+ 
+const handlePayment = async (razorpayOrder, mongoOrderId) => {
+  try {
+    const isScriptLoaded = await loadRazorpayScript();
 
-      const isScriptLoaded = await loadRazorpayScript();
-      if (!isScriptLoaded) {
-        alert(
-          "Failed to load Razorpay SDK. Please check your internet connection."
-        );
-        return;
-      }
+    if (!isScriptLoaded) {
+      alert("Failed to load Razorpay SDK. Please check your internet connection.");
+      return;
+    }
 
-      console.log("==== handlePayment 2");
+    const options = {
+      key: "rzp_test_Tndz3GpN0eA0vG",
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency || "INR",
+      name: "Cart7",
+      description: "Purchase Description",
+      order_id: razorpayOrder.id,
 
-
-      // Initialize Razorpay
-      const options = {
-        key: "rzp_test_T5RWyahkIYk5Ke", // Replace with Razorpay Key ID
-        amount: data.amount,
-        currency: "INR",
-        name: "Cart7",
-        description: "Purchase Description",
-        order_id: data.id,
-        handler: async function (response) {
-
-          const verifyRes = await axios.post('http://localhost:3000/order/payment/verify-payment', {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
+      handler: async function (response) {
+        try {
+          const verifyRes = await axios.post(
+            "https://zovaonix-backend.onrender.com/api/order/payment/verify-payment",
+            {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId: mongoOrderId,
+            }
+          );
 
           if (verifyRes.data.success) {
-            console.log("inside verifyRes.data.success");
-
-            //  navigate("/order-success");
+            toast.success("Payment successful!");
+            navigate("/order-success");
           } else {
-            alert("Payment Failed!");
-            console.log("elseeeeee");
-
+            toast.error("Payment verification failed!");
           }
+        } catch (error) {
+          console.error(
+            "Payment verification error:",
+            error.response?.data || error.message
+          );
+          toast.error("Could not verify payment. Please contact support before retrying.");
+        }
+      },
 
-        },
+      theme: {
+        color: "#3399cc",
+      },
+    };
 
-        // prefill: {
-        //   name: "John Doe",
-        //   email: "johndoe@example.com",
-        //   contact: "9999999999",
-        // },
+    const rzp1 = new window.Razorpay(options);
 
-        theme: {
-          color: "#3399cc",
-        },
-      };
+    rzp1.on("payment.failed", function (response) {
+      console.error("Razorpay payment failed:", response.error);
+      toast.error("Payment failed. Please try again.");
+    });
 
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
-    } catch (error) {
-      console.error("Payment Error:--------------", error);
-    }
-  };
-// --------------------------------------------------------
+    rzp1.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    toast.error("Unable to open payment checkout.");
+  }
+};
+
+  // --------------------------------------------------------
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validateForm()) return
+    e.preventDefault();
+
+    if (!validateForm()) return;
 
     try {
-      setLoading(true)
+      setLoading(true);
 
-      console.log("FULL CART ARRAY:");
-      console.log(JSON.stringify(cartArray, null, 2));
-      const orderItems = cartArray.map(item => ({
+      const orderItems = cartArray.map((item) => ({
         productId:
           item.product?._id ||
           item.productId ||
@@ -201,60 +204,57 @@ const CheckoutPage = () => {
           item.image ||
           "",
 
-        quantity: item.quantity || 1
+        quantity: item.quantity || 1,
       }));
-      console.log("ORDER ITEMS:", orderItems);
-
-      console.log(JSON.stringify(orderItems, null, 2));
 
       const orderData = {
         items: orderItems,
         totalAmount: totalOffer,
         paymentMethod: mapPaymentMethod(formData.paymentMethod),
-
         phone: formData.phone,
+        address: `${formData.address}, ${formData.city}, ${formData.state}, ${formData.zipCode}`,
+        orderId: `ORD-${Date.now()}`,
+      };
 
-        address: `${formData.address},
-            ${formData.city},
-            ${formData.state},
-            ${formData.zipCode}`,
-
-        orderId: `ORD-${Date.now()}`
-      }
       console.log("ORDER DATA:", orderData);
 
-      console.log("Final order data:", orderData);
+      const result = await createOrder(orderData);
 
-      const result = await createOrder(orderData)
-
-
-      console.log("result=======",result);
-      
-
-      if (result) {
-        if (result?.paymentMethod == "UPI") {
-
-          console.log("Razorpay Order =========  ", result);
-
-          handlePayment(result?.razorpayOrder);
-        } else {
-          console.log("COD Order =========  ", result);
-
-          toast.success('Order placed successfully!')
-        // Redirect to orders history after successful order
-        setTimeout(() => {
-          // navigate('/profile/orders-history')
-          navigate('/order-success')
-        }, 1500)
+      if (!result) {
+        return;
       }
-    }
+
+      console.log("Order created:", result);
+
+      const paymentMethod = result.paymentMethod;
+
+      if (paymentMethod === "UPI") {
+        if (result.razorpayOrder) {
+          handlePayment(result.razorpayOrder, result.order._id);
+        } else {
+          toast.error("Payment order details are missing");
+        }
+      } else if (
+        paymentMethod === "COD" ||
+        paymentMethod === "Cash on Delivery"
+      ) {
+        toast.success("Order placed successfully!");
+
+        setTimeout(() => {
+          navigate("/order-success");
+        }, 1500);
+      } else {
+        toast.error(`Unsupported payment method: ${paymentMethod}`);
+      }
     } catch (error) {
-      // toast.error('Failed to place order')
-      console.log(error," Failed to place order====");
+      console.error("Failed to place order:", error);
+      toast.error("Failed to place order");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
@@ -346,7 +346,7 @@ const CheckoutPage = () => {
             <div className="shadow-[0_0_3px_#24242453] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
               <div className="space-y-3">
-                <label className="flex items-center cursor-pointer">
+                {/* <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -356,7 +356,7 @@ const CheckoutPage = () => {
                     className="w-4 h-4"
                   />
                   <span className="ml-3">Credit/Debit Card</span>
-                </label>
+                </label> */}
                 <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"

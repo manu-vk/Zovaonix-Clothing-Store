@@ -63,7 +63,7 @@ const ProfilePage = () => {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-8">
-        <button className="bg-[#083344] text-white px-10 py-3 rounded-md font-medium">
+        <button className="bg-[#4A0015] text-white px-10 py-3 rounded-md font-medium">
           Profile
         </button>
 
@@ -75,7 +75,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Form */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
 
         {/* Full Name */}
         <div>
@@ -164,28 +164,31 @@ const ProfilePage = () => {
       </div>
 
       {/* Edit/Save Button */}
-      <div className="flex justify-end gap-3 mt-8">
-        {isEditing && (
-          <button
-            onClick={() => setIsEditing(false)}
-            className="border border-gray-300 text-gray-700 px-8 py-2 rounded-md font-medium hover:bg-gray-50 transition"
-          >
-            Cancel
-          </button>
-        )}
-        <button
-          onClick={() => {
-            if (isEditing) {
-              handleSave()
-            } else {
-              setIsEditing(true)
-            }
-          }}
-          className="border border-[#083344] text-[#083344] px-8 py-2 rounded-md font-medium hover:bg-[#083344] hover:text-white transition"
-        >
-          {isEditing ? 'Save Changes' : 'Edit Profile'}
-        </button>
-      </div>
+      
+<div className="flex justify-end gap-2 sm:gap-3 mt-6 sm:mt-8">
+  {isEditing && (
+    <button
+      onClick={() => setIsEditing(false)}
+      className="border border-Burgundy-300 text-gray-700 px-4 sm:px-8 py-2 text-sm sm:text-base rounded-md font-medium hover:bg-gray-50 transition"
+    >
+      Cancel
+    </button>
+  )}
+
+  <button
+    onClick={() => {
+      if (isEditing) {
+        handleSave()
+      } else {
+        setIsEditing(true)
+      }
+    }}
+    className="border border-[#083344] text-[#083344] px-4 sm:px-8 py-2 text-sm sm:text-base rounded-md font-medium hover:bg-[#083344] hover:text-white transition"
+  >
+    {isEditing ? 'Save Changes' : 'Edit Profile'}
+  </button>
+</div>
+
     </div>
   )
 }

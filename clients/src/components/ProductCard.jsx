@@ -21,38 +21,43 @@ const ProductCard = ({ product }) => {
 
       {/* wishlist button */}
 
-    <button
-  onClick={() => addToWish(product._id)}
-  className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 md:top-5 md:right-5 z-20 bg-white p-1 sm:p-2 rounded-full shadow cursor-pointer"
->
-  <FaHeart
-    className={`text-xs sm:text-base md:text-lg transition ${
-      isWishlisted ? "text-red-500" : "text-gray-300"
-    }`}
-  />
-</button>
+      <button
+        onClick={() => addToWish(product._id)}
+        className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 md:top-5 md:right-5 z-20 bg-white p-1 sm:p-2 rounded-full shadow cursor-pointer"
+      >
+        <FaHeart
+          className={`text-xs sm:text-base md:text-lg transition ${isWishlisted ? "text-red-500" : "text-gray-300"
+            }`}
+        />
+      </button>
 
       {/* image */}
 
-     <div
-                onClick={() => {
-                    navigate(`/products/${product._id}`);
-                    scrollTo(0, 0);
-                }}
-                className="group flex justify-center items-center w-full h-[120px] sm:h-[160px] md:h-[200px] shadow-[0_0_3px_1px_#24242453] rounded-[24px_0_24px_0] transition-all duration-300 ease-linear hover:rounded-[0_24px_0_24px] overflow-hidden bg-[#F8F3F4]"
-            >
-                <img
-                    src={product?.image?.[0]}
-                    alt={product.title}
-                    className="w-[160px] h-[160px] object-contain transition-transform duration-300 ease-linear group-hover:scale-110"
-                />
-            </div>
+      <div
+        onClick={() => {
+          navigate(`/products/${product._id}`);
+          scrollTo(0, 0);
+        }}
+        className="group flex justify-center items-center w-full h-[120px] sm:h-[160px] md:h-[200px] shadow-[0_0_3px_1px_#24242453] rounded-[24px_0_24px_0] transition-all duration-300 ease-linear hover:rounded-[0_24px_0_24px] overflow-hidden bg-[#F8F3F4]"
+      >
+        <img
+          src={product?.image?.[0]}
+          alt={product.title}
+          className="w-[160px] p-3 h-[160px] object-contain transition-transform duration-300 ease-linear group-hover:scale-110"
+        />
+      </div>
 
       {/* title */}
 
       <div className="mt-2">
         <p className="text-sm font-medium  text-black">
           {product.title}
+        </p>
+        <p className="text-gray-600 text-sm mt-3 leading-6">
+          {product.description
+            ? product.description.split(/\s+/).slice(0, 3).join(' ') +
+            (product.description.trim().split(/\s+/).length > 3 ? '...' : '')
+            : ''}
         </p>
       </div>
 
