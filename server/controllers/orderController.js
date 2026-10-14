@@ -1,12 +1,13 @@
 const orderModel = require("../model/orderModel");
 const User = require("../model/userModel");
+const crypto = require("crypto");
 
 
 const razorpay = require("../utils/razerpay");
 
 const createOrder = async (req, res) => {
     try {
-        const {items,totalAmount,paymentMethod,address,phone,orderId,currency = "INR"
+        const { items, totalAmount, paymentMethod, address, phone, orderId, currency = "INR"
 
         } = req.body;
         // const { paymentMethod, currency = "INR" } = req.body;
@@ -51,7 +52,7 @@ const createOrder = async (req, res) => {
                 message: "Missing required fields: address, phone, orderId"
             });
         }
-        
+
 
         const order = await orderModel.create({
             userId,
@@ -64,37 +65,42 @@ const createOrder = async (req, res) => {
             status: "pending"
         });
 
-           let razorpayOrder = null;
+        let razorpayOrder = null;
 
-    // Create one Razorpay order if payment is not COD
+        // Create one Razorpay order if payment is not COD
 
-    if (paymentMethod !== "COD") {
-      const options = {
-        amount: totalAmount * 100, // in paise
-        currency,
-        receipt: `receipt_${order._id}`,
-      };
+        if (
+            paymentMethod !== "COD" &&
+            paymentMethod !== "Cash on Delivery"
+        ) {
+            const options = {
+                amount: totalAmount * 100, // in paise
+                currency,
+                receipt: `receipt_${order._id}`,
+            };
 
 
-      razorpayOrder = await razorpay.orders.create(options);
+            razorpayOrder = await razorpay.orders.create(options);
 
 
-      if (!razorpayOrder) {
-        return res
-          .status(500)
-          .json({ message: "Razorpay order creation failed" });
-      }
-    }
+            if (!razorpayOrder) {
+                return res
+                    .status(500)
+                    .json({ message: "Razorpay order creation failed" });
+            }
+        }
 
         console.log("Order created successfully:", order._id);
 
-        res.status(201).json({ message: "Order created successfully", order,
-            razorpayOrder: razorpayOrder || null, paymentMethod });
+        res.status(201).json({
+            message: "Order created successfully", order,
+            razorpayOrder: razorpayOrder || null, paymentMethod
+        });
     } catch (error) {
         console.error("Order creation error:", error);
         res.status(500).json({ message: error.message });
     }
- 
+
 };
 
 const getOrderById = async (req, res) => {
@@ -143,7 +149,7 @@ const updateOrderStatus = async (req, res) => {
     try {
         const { status } = req.body;
         const validStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "return_requested",
-  "returned"];
+            "returned"];
 
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: "Invalid status" });
@@ -254,6 +260,68 @@ const returnOrder = async (req, res) => {
     }
 };
 
+const verifyPayment = async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderId,
+    } = req.body;
+
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment verification details",
+      });
+    }
+
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    // Signature is valid. Mark the matching order as paid.
+    const order = await orderModel.findOne({
+      orderId,
+      userId: req.user.id,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    order.status = "confirmed";
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment verified successfully",
+    });
+  } catch (error) {
+    console.error("Payment verification error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Payment verification failed",
+    });
+  }
+};
+
+
 module.exports = {
     createOrder,
     getOrderById,
@@ -262,5 +330,6 @@ module.exports = {
     updateOrderStatus,
     deleteOrder,
     cancelOrder,
-    returnOrder
+    returnOrder,
+     verifyPayment,
 };

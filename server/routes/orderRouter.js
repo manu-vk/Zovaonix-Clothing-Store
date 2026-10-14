@@ -8,7 +8,8 @@ const {
     updateOrderStatus,
     deleteOrder,
     cancelOrder,
-    returnOrder
+    returnOrder,
+    verifyPayment,
 } = require('../controllers/orderController');
 
 const orderRouter = express.Router();
@@ -19,6 +20,7 @@ orderRouter.get('/user/orders', protect, getUserOrders);
 orderRouter.get('/:id', protect, getOrderById);
 orderRouter.put('/:id/cancel', protect, cancelOrder);
 orderRouter.put('/:id/return', protect, returnOrder);
+orderRouter.post("/payment/verify-payment", protect, verifyPayment);
 
 // Admin routes
 orderRouter.get('/', protect, getAllOrders);
