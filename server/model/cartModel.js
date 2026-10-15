@@ -30,6 +30,10 @@ const cartSchema = new mongoose.Schema(
       default: 1,
       min: 1,
     },
+    selectedImage: {
+      type: String,
+      default: null,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -40,6 +44,10 @@ const cartSchema = new mongoose.Schema(
 );
 
 // ONE product per user only
-cartSchema.index({ user: 1, productId: 1 }, { unique: true });
+// cartSchema.index({ user: 1, productId: 1 }, { unique: true });
+cartSchema.index(
+  { user: 1, productId: 1, selectedImage: 1 },
+  { unique: true }
+);
 
 module.exports = mongoose.model("Cart", cartSchema);
