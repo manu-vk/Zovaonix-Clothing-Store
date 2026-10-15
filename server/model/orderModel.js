@@ -31,6 +31,11 @@ const orderSchema = new mongoose.Schema({
                 type: Number,
                 required: true,
                 default: 1
+            },
+            size: {
+                type: String,
+                enum: ["S", "M", "L", "XL", "XXL"],
+                default: null
             }
         }
     ],
@@ -45,7 +50,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested','returned'],
+        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested', 'returned'],
         default: 'pending'
     },
     address: {
@@ -68,21 +73,21 @@ const orderSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    },  
+    },
     razorpayOrderId: {
-    type: String,
-    default: null
-},
-razorpayPaymentId: {
-    type: String,
-    default: null
-},
-paymentStatus: {
-    type: String,
-    enum: ['pending', 'paid', 'failed'],
-    default: 'pending'
-},
-    
+        type: String,
+        default: null
+    },
+    razorpayPaymentId: {
+        type: String,
+        default: null
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid', 'failed'],
+        default: 'pending'
+    },
+
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -254,6 +254,7 @@ const getCart = async (req, res) => {
           offerPrice: item.productId.offerPrice,
           image: images,
           selectedImage: item.selectedImage || null,
+          selectedSize: item.selectedSize || null,
           quantity: item.quantity,
         };
       });
@@ -442,8 +443,8 @@ const getCart = async (req, res) => {
 // };
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity, selectedImage } = req.body;
-
+    const { productId, quantity, selectedImage,selectedSize } = req.body;
+console.log("ADD TO CART BODY:", req.body);
     if (!req.user || !req.user.id) {
       return res.status(401).json({ message: "User not found" });
     }
@@ -467,6 +468,7 @@ const addToCart = async (req, res) => {
       productId,
       user: userId,
       selectedImage: image,
+      selectedSize: selectedSize || null,
     });
 
     if (existingItem) {
@@ -484,6 +486,7 @@ const addToCart = async (req, res) => {
       user: userId,
       quantity: Number(quantity) || 1,
       selectedImage: image,
+      selectedSize: selectedSize || null,
     });
 
     return res.status(201).json({

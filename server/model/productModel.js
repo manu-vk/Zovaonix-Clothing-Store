@@ -15,6 +15,11 @@ const ProductSchema = new mongoose.Schema({
     description: { type: String, required: true },
     rating: { type: Number, required: true },
     ratingCount: { type: Number, required: true },
+    sizes: {
+    type: [String],
+    enum: ["S", "M", "L", "XL", "XXL"],
+    default: ["S", "M", "L", "XL", "XXL"],
+},
     image: { type: [String], required: true },
 }, { timestamps: true });
 

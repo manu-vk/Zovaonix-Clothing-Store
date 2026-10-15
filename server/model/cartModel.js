@@ -34,6 +34,11 @@ const cartSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    selectedSize: {
+  type: String,
+  enum: ["S", "M", "L", "XL", "XXL"],
+  default: null,
+},
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -46,7 +51,7 @@ const cartSchema = new mongoose.Schema(
 // ONE product per user only
 // cartSchema.index({ user: 1, productId: 1 }, { unique: true });
 cartSchema.index(
-  { user: 1, productId: 1, selectedImage: 1 },
+  { user: 1, productId: 1, selectedImage: 1, selectedSize: 1 },
   { unique: true }
 );
 

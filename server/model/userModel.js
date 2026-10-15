@@ -53,11 +53,24 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
     },
+
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: function () {
+        return this.authProvider !== "google";
+      },
       minlength: [6, "Password must be at least 6 characters long"],
     },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+    },
+
     phone: {
       type: String,
       match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],

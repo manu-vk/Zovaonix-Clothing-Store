@@ -14,7 +14,7 @@
 
 // const addProduct = async (req, res) => {
 //     try {
-       
+
 //         const images = req.files ? req.files.map(file => file.filename) : [];
 //         const product = await productModel.create({
 //             ...req.body,
@@ -82,20 +82,26 @@ const addProduct = async (req, res) => {
     try {
         const images = req.files
             ? await Promise.all(
-                  req.files.map(async (file) => {
-                      const result = await uploadToCloudinary(file.buffer);
-                      return result.secure_url;
-                  })
-              )
+                req.files.map(async (file) => {
+                    const result = await uploadToCloudinary(file.buffer);
+                    return result.secure_url;
+                })
+            )
             : [];
 
         const product = await productModel.create({
             ...req.body,
+            sizes,
             image: images,
         });
 
         res.status(201).json(product);
-    } catch (error) {
+
+        const sizes = req.body.sizes
+            ? JSON.parse(req.body.sizes)
+            : ["S", "M", "L", "XL", "XXL"];
+    }
+    catch (error) {
         console.log(error);
         res.status(500).json({
             message: error.message,
@@ -124,6 +130,9 @@ const updateProduct = async (req, res) => {
         const updateData = {
             ...req.body,
         };
+        if (req.body.sizes) {
+    updateData.sizes = JSON.parse(req.body.sizes);
+}
 
         if (req.files && req.files.length > 0) {
             const images = await Promise.all(
