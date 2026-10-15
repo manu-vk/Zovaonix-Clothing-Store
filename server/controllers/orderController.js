@@ -104,7 +104,7 @@ const createOrder = async (req, res) => {
 
             calculatedTotal += unitPrice * quantity;
 
-console.log("ORDER ITEM SIZE:", item.size);
+            console.log("ORDER ITEM SIZE:", item.size);
             verifiedItems.push({
                 productId: product._id,
                 name: product.title,
@@ -223,29 +223,90 @@ const getAllOrders = async (req, res) => {
     }
 };
 
+// const updateOrderStatus = async (req, res) => {
+//     try {
+//         const { status } = req.body;
+//         const validStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "return_requested",
+//             "returned", "return_approved",
+//             "return_rejected"];
+
+//         if (!validStatuses.includes(status)) {
+//             return res.status(400).json({ message: "Invalid status" });
+//         }
+
+//         const order = await orderModel.findByIdAndUpdate(
+//             req.params.id,
+//             { status },
+//             { new: true }
+//         );
+
+//         if (!order) {
+//             return res.status(404).json({ message: "Order not found" });
+//         }
+
+//         res.status(200).json({ message: "Order status updated", order });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
 const updateOrderStatus = async (req, res) => {
     try {
         const { status } = req.body;
-        const validStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "return_requested",
-            "returned"];
 
+        const validStatuses = [
+            "pending",
+            "confirmed",
+            "processing",
+            "shipped",
+            "delivered",
+            "cancelled",
+            "return_requested",
+            "returned",
+            "return_approved",
+            "return_rejected"
+        ];
+console.log("Received status:", status);
+console.log("Valid statuses:", validStatuses);
         if (!validStatuses.includes(status)) {
-            return res.status(400).json({ message: "Invalid status" });
+            return res.status(400).json({
+                message: "Invalid status"
+            });
         }
 
-        const order = await orderModel.findByIdAndUpdate(
-            req.params.id,
-            { status },
-            { new: true }
-        );
+        const order = await orderModel.findById(req.params.id);
 
         if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+            return res.status(404).json({
+                message: "Order not found"
+            });
         }
 
-        res.status(200).json({ message: "Order status updated", order });
+        // Return decisions are allowed only for requested returns
+        if (
+            status === "return_approved" ||
+            status === "return_rejected"
+        ) {
+            if (order.status !== "return_requested") {
+                return res.status(400).json({
+                    message: "This order has no pending return request"
+                });
+            }
+        }
+
+        order.status = status;
+        await order.save();
+
+        return res.status(200).json({
+            message: "Order status updated",
+            order
+        });
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({
+            message: error.message
+        });
     }
 };
 
