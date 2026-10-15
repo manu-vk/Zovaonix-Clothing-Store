@@ -504,15 +504,18 @@ const addToCart = async (req, res) => {
 // =======================
 // UPDATE CART ITEM
 // =======================
+
 const updateCartItem = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
-
+    const { cartId, quantity } = req.body;
     const userId = req.user.id.toString();
-    const productIdString = productId.toString();
+
+    if (!cartId) {
+      return res.status(400).json({ message: "Cart ID missing" });
+    }
 
     const cartItem = await Cart.findOne({
-      productId: productIdString,
+      _id: cartId,
       user: userId,
     });
 
@@ -522,11 +525,8 @@ const updateCartItem = async (req, res) => {
       });
     }
 
-    // Remove if quantity becomes 0
     if (quantity <= 0) {
-      await Cart.deleteOne({
-        _id: cartItem._id,
-      });
+      await Cart.deleteOne({ _id: cartItem._id, user: userId });
 
       return res.status(200).json({
         message: "Item removed from cart",
@@ -534,55 +534,125 @@ const updateCartItem = async (req, res) => {
     }
 
     cartItem.quantity = quantity;
-
     await cartItem.save();
 
     return res.status(200).json({
       message: "Cart updated",
       cart: cartItem,
     });
-
   } catch (error) {
     console.error("Update cart error:", error);
-
-    return res.status(500).json({
-      message: error.message,
-    });
+    return res.status(500).json({ message: error.message });
   }
 };
+
+// const updateCartItem = async (req, res) => {
+//   try {
+//     const { productId, quantity } = req.body;
+
+//     const userId = req.user.id.toString();
+//     const productIdString = productId.toString();
+
+//     const cartItem = await Cart.findOne({
+//       productId: productIdString,
+//       user: userId,
+//     });
+
+//     if (!cartItem) {
+//       return res.status(404).json({
+//         message: "Cart item not found",
+//       });
+//     }
+
+//     // Remove if quantity becomes 0
+//     if (quantity <= 0) {
+//       await Cart.deleteOne({
+//         _id: cartItem._id,
+//       });
+
+//       return res.status(200).json({
+//         message: "Item removed from cart",
+//       });
+//     }
+
+//     cartItem.quantity = quantity;
+
+//     await cartItem.save();
+
+//     return res.status(200).json({
+//       message: "Cart updated",
+//       cart: cartItem,
+//     });
+
+//   } catch (error) {
+//     console.error("Update cart error:", error);
+
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
 
 
 // =======================
 // REMOVE FROM CART
 // =======================
+// const removeFromCart = async (req, res) => {
+//   try {
+//     const userId = req.user.id.toString();
+//     const productId = req.params.productId.toString();
+
+//     const cartItem = await Cart.findOneAndDelete({
+//       productId,
+//       user: userId,
+//     });
+
+//     if (!cartItem) {
+//       return res.status(404).json({
+//         message: "Item not found",
+//       });
+//     }
+
+//     return res.status(200).json({
+//       message: "Item removed from cart",
+//     });
+
+//   } catch (error) {
+//     console.error("Remove cart error:", error);
+
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
 const removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id.toString();
-    const productId = req.params.productId.toString();
-
+    const cartId = req.params.productId;
+console.log("Delete cart ID:", req.params.productId);
+console.log("Logged-in user ID:", req.user.id);
     const cartItem = await Cart.findOneAndDelete({
-      productId,
+      _id: cartId,
       user: userId,
     });
+    console.log("Found cart item:", cartItem);
 
     if (!cartItem) {
       return res.status(404).json({
-        message: "Item not found",
+        message: "Cart item not found",
       });
     }
 
     return res.status(200).json({
       message: "Item removed from cart",
     });
-
   } catch (error) {
     console.error("Remove cart error:", error);
-
-    return res.status(500).json({
-      message: error.message,
-    });
+    return res.status(500).json({ message: error.message });
   }
 };
+
 
 
 module.exports = {
