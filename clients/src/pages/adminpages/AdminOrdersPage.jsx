@@ -15,6 +15,8 @@ const AdminOrdersPage = () => {
     cancelled: 'bg-red-100 text-red-700',
     return_requested: 'bg-orange-100 text-orange-700',
     returned: 'bg-gray-100 text-gray-700',
+    return_approved: 'bg-green-100 text-green-700',
+    return_rejected: 'bg-red-100 text-red-700',
 
   }
 
@@ -40,6 +42,16 @@ const AdminOrdersPage = () => {
       await deleteOrder(orderId)
     }
   }
+  const handleReturnDecision = async (orderId, decision) => {
+    const action = decision === 'return_approved' ? 'approve' : 'reject';
+
+    if (!window.confirm(`Are you sure you want to ${action} this return request?`)) {
+      return;
+    }
+
+    await updateOrderStatus(orderId, decision);
+    await fetchAllOrders();
+  };
 
   return (
     <div className='p-6 w-full'>
@@ -54,9 +66,12 @@ const AdminOrdersPage = () => {
           <p className='text-gray-500'>Orders will appear here once customers place them</p>
         </div>
       ) : (
+
         <div className='bg-white rounded-xl shadow overflow-hidden'>
-          <div className='overflow-x-auto'>
+          <div className='overflow-x-auto lg:max-h-[600px] lg:overflow-y-auto'>
             <table className='w-full'>
+
+
               <thead>
                 <tr className='bg-gray-50 border-b'>
                   <th className='px-6 py-4 text-left text-sm font-semibold'>Order ID</th>
@@ -79,6 +94,12 @@ const AdminOrdersPage = () => {
                         <p className='font-medium'>{order.userId?.name || 'N/A'}</p>
                         <p className='text-gray-500 text-xs'>{order.userId?.email || 'N/A'}</p>
                       </div>
+                      <p className="text-gray-500 text-xs mt-1">
+                        Phone: {order.phone || 'N/A'}
+                      </p>
+                      <p className="text-gray-500 text-xs mt-1">
+                        Address: {order.address || 'N/A'}
+                      </p>
                     </td>
 
                     <td className='px-6 py-4 text-sm'>
@@ -119,9 +140,29 @@ const AdminOrdersPage = () => {
                         <option value='cancelled'>Cancelled</option>
                         <option value="return_requested">Return Requested</option>
                         <option value="returned">Returned</option>
+                        <option value="return_approved">Return Approved</option>
+                        <option value="return_rejected">Return Rejected</option>
                       </select>
                     </td>
+
                     <td className='px-6 py-4 text-sm'>
+                      {order.status === 'return_requested' && (
+                        <div className="flex flex-col gap-2 mb-2">
+                          <button
+                            onClick={() => handleReturnDecision(order._id, 'return_approved')}
+                            className="px-3 py-1 bg-green-100 text-green-600 rounded text-sm hover:bg-green-200"
+                          >
+                            Approve Return
+                          </button>
+
+                          <button
+                            onClick={() => handleReturnDecision(order._id, 'return_rejected')}
+                            className="px-3 py-1 bg-red-100 text-red-600 rounded text-sm hover:bg-red-200"
+                          >
+                            Reject Return
+                          </button>
+                        </div>
+                      )}
                       <button
                         onClick={() => handleDelete(order._id)}
                         className='px-3 py-1 bg-red-100 text-red-600 rounded text-sm hover:bg-red-200'

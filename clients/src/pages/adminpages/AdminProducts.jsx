@@ -86,23 +86,43 @@ const AdminProducts = () => {
 
     }
 
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-        setFormData({
-            title: product.title,
-            price: product.price,
-            offerPrice: product.offerPrice,
-            category: product.category,
-            brand: product.brand,
-            rating: product.rating,
-            ratingCount: product.ratingCount,
-            stock: product.stock,
-            description: product.description || '',
-            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
-            // image: [...product.image]
-        });
-        setShowAddForm(true);
-    };
+    // const handleEdit = (product) => {
+
+    //     setEditingProduct(product);
+    //     setFormData({
+    //         title: product.title,
+    //         price: product.price,
+    //         offerPrice: product.offerPrice,
+    //         category: product.category,
+    //         brand: product.brand,
+    //         rating: product.rating,
+    //         ratingCount: product.ratingCount,
+    //         stock: product.stock,
+    //         description: product.description || '',
+    //         sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
+    //         // image: [...product.image]
+    //     });
+    //     setShowAddForm(true);
+    // };
+const handleEdit = (product) => {
+    setEditingProduct(product);
+
+    setFormData({
+        title: product.title || '',
+        price: product.price ?? '',
+        offerPrice: product.offerPrice ?? '',
+        category: product.category?._id || product.category || '',
+        brand: product.brand || '',
+        rating: product.rating ?? '',
+        ratingCount: product.ratingCount ?? '',
+        stock: product.stock ?? '',
+        description: product.description || '',
+        sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
+        image: [...product.image],
+    });
+
+    setShowAddForm(true);
+};
 
     const handleDelete = (id) => {
         deleteProduct(id);
@@ -293,7 +313,8 @@ const AdminProducts = () => {
                         </button>
                     </div>
                 ) : (
-                    <div>
+                    <div className="lg:max-h-[500px] lg:overflow-y-auto">
+    
                         {products.map((product) => (
                             <div key={product._id} className="grid grid-cols-9 items-center p-3 border-b hover:bg-gray-50">
                                 {/* image area is issued 💡: db issue */}
