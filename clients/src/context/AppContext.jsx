@@ -106,31 +106,55 @@ export const AppContextProvider = ({ children }) => {
     }
   };
   const fetchCart = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token in fetchCart");
-        setCartItems([]);
-        return;
-      }
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await axios.get("https://zovaonix-backend.onrender.com/api/cart", {
-        headers: { Authorization: `Bearer ${token}` }
+    if (!token) {
+      setCartItems({});
+      return;
+    }
+
+    const res = await axios.get(
+      "https://zovaonix-backend.onrender.com/api/cart",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Cart fetched:", res.data);
+
+    const cartData = res.data?.cart;
+
+    if (Array.isArray(cartData)) {
+      const cartObject = {};
+
+      cartData.forEach((item) => {
+        const productId =
+          typeof item.productId === "object"
+            ? item.productId?._id
+            : item.productId;
+
+        if (productId) {
+          cartObject[productId] = Number(item.quantity) || 0;
+        }
       });
 
-      console.log("Cart fetched:", res.data);
-
-      if (res.data && res.data.cart) {
-        setCartItems(res.data.cart);
-      } else {
-        console.warn("No cart data in response");
-        setCartItems([]);
-      }
-    } catch (err) {
-      console.error("Error fetching cart:", err.response?.data || err.message);
-      setCartItems([]);
+      setCartItems(cartObject);
+    } else if (cartData && typeof cartData === "object") {
+      setCartItems(cartData);
+    } else {
+      setCartItems({});
     }
-  };
+  } catch (err) {
+    console.error(
+      "Error fetching cart:",
+      err.response?.data || err.message
+    );
+    setCartItems({});
+  }
+};
 
 
   const updateCartItem = async (productId, quantity) => {

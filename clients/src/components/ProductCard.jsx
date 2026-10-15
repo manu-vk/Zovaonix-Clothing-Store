@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
           navigate(`/products/${product._id}`);
           scrollTo(0, 0);
         }}
-        className="group flex justify-center items-center w-full h-[120px] sm:h-[160px] md:h-[200px] shadow-[0_0_3px_1px_#24242453] rounded-[24px_0_24px_0] transition-all duration-300 ease-linear hover:rounded-[0_24px_0_24px] overflow-hidden bg-[#F8F3F4]"
+        className="group flex justify-center items-center p-5  w-full h-[120px] sm:h-[160px] md:h-[200px] shadow-[0_0_3px_1px_#24242453] rounded-[24px_0_24px_0] transition-all duration-300 ease-linear hover:rounded-[0_24px_0_24px] overflow-hidden bg-[#F8F3F4]"
       >
         <img
           src={product?.image?.[0]}

@@ -34,6 +34,26 @@ const ProductView = () => {
   const handleWish = (productId) => {
     addToWish(productId)
   }
+  const handleShare = async () => {
+    const shareData = {
+      title: product.title,
+      text: `Check out ${product.title} at Zovaonyx!`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Product link copied!");
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Share failed:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     if (products.length > 0 && product) {
@@ -76,7 +96,7 @@ const ProductView = () => {
                   key={index}
                   src={img}
                   onClick={() => setThumbnail(img)}
-                  className="w-20 h-20 border cursor-pointer"
+                  className="w-20 p-2 h-20 border cursor-pointer"
                 />
               ))}
             </div>
@@ -84,7 +104,7 @@ const ProductView = () => {
             <div className="relative w-full sm:w-[400px]">
               <img
                 src={thumbnail}
-                className="w-full aspect-square object-cover border"
+                className="w-full p-3 aspect-square object-fill border"
               />
 
               <div className="absolute top-2 right-2 flex flex-col gap-1.5 sm:gap-2">
@@ -99,7 +119,9 @@ const ProductView = () => {
                   src={assets.shareIcon}
                   className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
                   alt="Share"
+                  onClick={handleShare}
                 />
+
               </div>
             </div>
 
@@ -134,8 +156,8 @@ const ProductView = () => {
           </p>
 
           <div className="flex gap-2 items-center mt-2">
-            <span>{product.rating}</span>
-            <span>({product.ratingCount})</span>
+            <span>Rating*{product.rating}</span>
+            <span>(Available{product.ratingCount})</span>
           </div>
 
           <p className="text-red-500 mt-2">Hurry up! limited stock</p>
@@ -147,9 +169,14 @@ const ProductView = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-4">
+
+
             <button
               onClick={() =>
-                updateCartItem(product._id, (cartItems[product._id] || 0) - 1)
+                updateCartItem(
+                  product._id,
+                  Math.max(0, (cartItems[product._id] || 0) - 1)
+                )
               }
             >
               -
@@ -159,7 +186,10 @@ const ProductView = () => {
 
             <button
               onClick={() =>
-                updateCartItem(product._id, (cartItems[product._id] || 0) + 1)
+                updateCartItem(
+                  product._id,
+                  (cartItems[product._id] || 0) + 1
+                )
               }
             >
               +

@@ -42,6 +42,8 @@ import ordersIcon from './icons/ordersIcon.png'
 import customersIcon from './icons/customersIcon.png'
 import categoriesIcon from './icons/categoriesIcon.png'
 
+
+
 import clothingBanner1 from './images/clothingBanner1.png'
 import clothingBanner2 from './images/clothingBanner2.png'
 import imageOne from './images/ec25b4b5e08d65f5173c15e1f91cde6f71eb4f06.jpg'

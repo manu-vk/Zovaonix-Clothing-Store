@@ -4,6 +4,7 @@ import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 import toast from 'react-hot-toast';
 
+import { ShoppingBag } from "lucide-react";
 const Navbar = () => {
 
     const { navigate, user, setUser, admin, setAdmin, setShowUserLogin, searchQuery, setSearchQuery, getCartCount, getWishlistCount } = useContext(AppContext);
@@ -172,7 +173,7 @@ const Navbar = () => {
                     {/* {user &&
                         <Link to='/cart' className='block'>Cart</Link>
                     } */}
-                    <Link to='/gifting' className='block'>Gifting</Link>
+                    {/* <Link to='/gifting' className='block'>Gifting</Link> */}
                     <Link to='/about' className='block'>About</Link>
                     {/* <Link to='/profile'>Profile</Link> */}
 
@@ -204,6 +205,16 @@ const Navbar = () => {
 
                     <Link to="/" className="flex items-center justify-center">
                         <img src={assets.homeIcon} alt="Home" className="w-5 h-5 brightness-0 invert" />
+                    </Link>
+
+                    <Link
+                        to="/products"
+                        className="flex items-center justify-center"
+                    >
+                        <ShoppingBag
+                            className="w-5 h-5 text-white"
+                            strokeWidth={2}
+                        />
                     </Link>
 
 

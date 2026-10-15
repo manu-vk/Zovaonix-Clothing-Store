@@ -1,106 +1,181 @@
 const orderModel = require("../model/orderModel");
+const mongoose = require("mongoose");
 const User = require("../model/userModel");
+const Product = require("../model/productModel");
 const crypto = require("crypto");
 
 
 const razorpay = require("../utils/razerpay");
 
 const createOrder = async (req, res) => {
-    try {
-        const { items, totalAmount, paymentMethod, address, phone, orderId, currency = "INR"
+  let order = null;
 
-        } = req.body;
-        // const { paymentMethod, currency = "INR" } = req.body;
-        const userId = req.user.id;
+  try {
+    const { items, paymentMethod, address, phone, orderId } = req.body;
+    const userId = req.user?.id;
 
-        console.log("Order creation request:", {
-            userId,
-            itemsCount: items?.length,
-            totalAmount,
-            paymentMethod,
-            itemsData: items
-        });
-
-        if (!userId) {
-            return res.status(400).json({ message: "User not authenticated" });
-        }
-
-        if (!items) {
-            return res.status(400).json({ message: "Missing required field: items" });
-        }
-
-        if (!Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ message: "Order must contain at least one item" });
-        }
-
-        if (!totalAmount || totalAmount <= 0) {
-            return res.status(400).json({ message: "Missing required field: totalAmount must be greater than 0" });
-        }
-
-        // Validate each item has required fields
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (!item.productId || !item.name || !item.price || !item.quantity) {
-                console.error(`Item ${i} missing fields:`, item);
-                return res.status(400).json({
-                    message: `Item ${i} missing required fields: productId, name, price, quantity`
-                });
-            }
-        }
-        if (!address || !phone || !orderId) {
-            return res.status(400).json({
-                message: "Missing required fields: address, phone, orderId"
-            });
-        }
-
-
-        const order = await orderModel.create({
-            userId,
-            items,
-            totalAmount,
-            paymentMethod: paymentMethod || "Cash on Delivery",
-            address,
-            phone,
-            orderId,
-            status: "pending"
-        });
-
-        let razorpayOrder = null;
-
-        // Create one Razorpay order if payment is not COD
-
-        if (
-            paymentMethod !== "COD" &&
-            paymentMethod !== "Cash on Delivery"
-        ) {
-            const options = {
-                amount: totalAmount * 100, // in paise
-                currency,
-                receipt: `receipt_${order._id}`,
-            };
-
-
-            razorpayOrder = await razorpay.orders.create(options);
-
-
-            if (!razorpayOrder) {
-                return res
-                    .status(500)
-                    .json({ message: "Razorpay order creation failed" });
-            }
-        }
-
-        console.log("Order created successfully:", order._id);
-
-        res.status(201).json({
-            message: "Order created successfully", order,
-            razorpayOrder: razorpayOrder || null, paymentMethod
-        });
-    } catch (error) {
-        console.error("Order creation error:", error);
-        res.status(500).json({ message: error.message });
+    if (!userId) {
+      return res.status(401).json({
+        message: "User not authenticated",
+      });
     }
 
+    // Backend must enforce UPI-only checkout.
+    if (paymentMethod !== "UPI") {
+      return res.status(400).json({
+        message: "Only UPI payments are accepted",
+      });
+    }
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        message: "Order must contain at least one item",
+      });
+    }
+
+    if (!address?.trim() || !phone?.trim() || !orderId?.trim()) {
+      return res.status(400).json({
+        message: "Address, phone and orderId are required",
+      });
+    }
+
+    // Validate quantities and product IDs before querying MongoDB.
+    for (const item of items) {
+      if (
+        !item.productId ||
+        !mongoose.isValidObjectId(item.productId) ||
+        !Number.isInteger(Number(item.quantity)) ||
+        Number(item.quantity) < 1
+      ) {
+        return res.status(400).json({
+          message: "Each item must have a valid productId and quantity",
+        });
+      }
+    }
+
+    // Prevent duplicate client order IDs.
+    const existingOrder = await orderModel.findOne({ orderId });
+    if (existingOrder) {
+      return res.status(409).json({
+        message: "This orderId has already been used",
+      });
+    }
+
+    // Fetch trusted product information from the database.
+    const productIds = [
+      ...new Set(items.map((item) => item.productId.toString())),
+    ];
+
+    const products = await Product.find({
+      _id: { $in: productIds },
+    });
+
+    const productMap = new Map(
+      products.map((product) => [product._id.toString(), product])
+    );
+
+    let calculatedTotal = 0;
+    const verifiedItems = [];
+
+    for (const item of items) {
+      const product = productMap.get(item.productId.toString());
+      const quantity = Number(item.quantity);
+
+      if (!product) {
+        return res.status(400).json({
+          message: `Product not found: ${item.productId}`,
+        });
+      }
+
+      if (product.stock < quantity) {
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.title}`,
+        });
+      }
+
+      // Use offerPrice as the checkout price.
+      const unitPrice = Number(product.offerPrice);
+
+      if (!Number.isFinite(unitPrice) || unitPrice <= 0) {
+        return res.status(400).json({
+          message: `Invalid price for ${product.title}`,
+        });
+      }
+
+      calculatedTotal += unitPrice * quantity;
+
+      verifiedItems.push({
+        productId: product._id,
+        name: product.title,
+        price: unitPrice,
+        image: product.image?.[0] || "",
+        description: product.description,
+        quantity,
+      });
+    }
+
+    calculatedTotal = Number(calculatedTotal.toFixed(2));
+
+    if (!Number.isFinite(calculatedTotal) || calculatedTotal <= 0) {
+      return res.status(400).json({
+        message: "Invalid order total",
+      });
+    }
+
+    // Never use the frontend's totalAmount or item prices.
+    order = await orderModel.create({
+      userId,
+      items: verifiedItems,
+      totalAmount: calculatedTotal,
+      paymentMethod: "UPI",
+      address: address.trim(),
+      phone: phone.trim(),
+      orderId: orderId.trim(),
+      status: "pending",
+      paymentStatus: "pending",
+    });
+
+    // Create the Razorpay order using the server-calculated total.
+    const razorpayOrder = await razorpay.orders.create({
+      amount: Math.round(calculatedTotal * 100),
+      currency: "INR",
+      receipt: `receipt_${order._id}`,
+    });
+
+    if (!razorpayOrder?.id) {
+      throw new Error("Razorpay order creation failed");
+    }
+
+    // Save the Razorpay order ID for secure payment verification.
+    order.razorpayOrderId = razorpayOrder.id;
+    await order.save();
+
+    return res.status(201).json({
+      message: "Order created successfully",
+      order,
+      razorpayOrder,
+      paymentMethod: "UPI",
+    });
+  } catch (error) {
+    console.error("Order creation error:", error.message);
+
+    // Avoid leaving an unusable pending order if Razorpay creation fails.
+    if (order?._id) {
+      try {
+        await orderModel.deleteOne({
+          _id: order._id,
+          paymentStatus: "pending",
+          status: "pending",
+        });
+      } catch (cleanupError) {
+        console.error("Order cleanup failed:", cleanupError.message);
+      }
+    }
+
+    return res.status(500).json({
+      message: "Unable to create payment order",
+    });
+  }
 };
 
 const getOrderById = async (req, res) => {
@@ -272,7 +347,8 @@ const verifyPayment = async (req, res) => {
     if (
       !razorpay_order_id ||
       !razorpay_payment_id ||
-      !razorpay_signature
+      !razorpay_signature ||
+      !orderId
     ) {
       return res.status(400).json({
         success: false,
@@ -280,21 +356,15 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
-
-    if (generatedSignature !== razorpay_signature) {
+    if (!mongoose.isValidObjectId(orderId)) {
       return res.status(400).json({
         success: false,
-        message: "Payment verification failed",
+        message: "Invalid order ID",
       });
     }
 
-    // Signature is valid. Mark the matching order as paid.
     const order = await orderModel.findOne({
-      orderId,
+      _id: orderId,
       userId: req.user.id,
     });
 
@@ -305,7 +375,77 @@ const verifyPayment = async (req, res) => {
       });
     }
 
+    // Confirm the Razorpay ID matches the one saved by the backend.
+    if (order.razorpayOrderId !== razorpay_order_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Razorpay order ID does not match",
+      });
+    }
+
+    // Make repeat verification safe.
+    if (order.paymentStatus === "paid") {
+      return res.status(200).json({
+        success: true,
+        message: "Payment already verified",
+      });
+    }
+
+    if (order.paymentMethod !== "UPI") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method",
+      });
+    }
+
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!secret) {
+      console.error("RAZORPAY_KEY_SECRET is not configured");
+      return res.status(500).json({
+        success: false,
+        message: "Payment verification is unavailable",
+      });
+    }
+
+    // Verify signature using the server-stored Razorpay order ID.
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(`${order.razorpayOrderId}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    const expectedBuffer = Buffer.from(expectedSignature, "hex");
+    const receivedBuffer = Buffer.from(razorpay_signature, "hex");
+
+    if (
+      expectedBuffer.length !== receivedBuffer.length ||
+      !crypto.timingSafeEqual(expectedBuffer, receivedBuffer)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    // Confirm the payment's actual status with Razorpay.
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
+
+    if (
+      payment.order_id !== order.razorpayOrderId ||
+      payment.status !== "captured" ||
+      payment.amount !== Math.round(order.totalAmount * 100) ||
+      payment.currency !== "INR"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment is not captured or payment details do not match",
+      });
+    }
+
+    order.razorpayPaymentId = razorpay_payment_id;
+    order.paymentStatus = "paid";
     order.status = "confirmed";
+
     await order.save();
 
     return res.status(200).json({
@@ -313,7 +453,8 @@ const verifyPayment = async (req, res) => {
       message: "Payment verified successfully",
     });
   } catch (error) {
-    console.error("Payment verification error:", error);
+    console.error("Payment verification error:", error.message);
+
     return res.status(500).json({
       success: false,
       message: "Payment verification failed",

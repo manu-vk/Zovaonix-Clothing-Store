@@ -66,7 +66,17 @@ body,
   .mainSecbannerImg {
     background-position: center 50%;    
   }
- 
+}
+@media (min-width:422px) {
+  .mainbannerImg {
+    background-position: center 50%;    
+  }
+}
+@media (min-width:422px) {
+  .mainSecbannerImg {
+    background-position: center 50%; 
+    background-size: 95% auto;   
+  }
 }
 @media (min-width:677px) {
   .mainbannerImg,
@@ -178,4 +188,33 @@ body,
 
 .animate-marquee {
   animation: marquee 7s linear infinite;
+}
+
+/* Terms popup animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-popup-in {
+  animation: popupIn 0.3s ease-out;
 }

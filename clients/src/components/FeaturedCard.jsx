@@ -18,7 +18,7 @@ const FeaturedCard = ({ product }) => {
                 <img
                     src={product?.image?.[0]}
                     alt={product.title}
-                    className="w-[160px] h-[160px] object-contain transition-transform duration-300 ease-linear group-hover:scale-110"
+                    className="w-[160px] h-[160px] p-5 object-contain transition-transform duration-300 ease-linear group-hover:scale-110"
                 />
             </div>
 

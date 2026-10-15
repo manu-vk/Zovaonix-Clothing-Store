@@ -134,7 +134,7 @@ const Cart = () => {
                       <button className="cursor-pointer border px-4 py-1 rounded text-sm hover:bg-gray-50">Share</button>
                       <button 
                         onClick={() => navigate(`/products/${itemId}`)}
-                        className="cursor-pointer bg-[#00354B] text-white px-6 py-1 rounded text-sm hover:bg-opacity-90"
+                        className="cursor-pointer bg-[#4A0015] text-white px-6 py-1 rounded text-sm hover:bg-opacity-90"
                       >
                         View
                       </button>
@@ -169,7 +169,7 @@ const Cart = () => {
             <button 
               onClick={handleProceedToBuy}
               disabled={loading}
-              className="cursor-pointer w-full bg-[#00354B] text-white py-2 rounded mt-4 hover:bg-opacity-90 disabled:opacity-50 transition"
+              className="cursor-pointer w-full bg-[#4A0015] text-white py-2 rounded mt-4 hover:bg-opacity-90 disabled:opacity-50 transition"
             >
               {loading ? 'Processing...' : 'Proceed to Checkout'}
             </button>

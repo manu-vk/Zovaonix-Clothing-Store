@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
+import axios from 'axios';
 import { Link } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import toast from 'react-hot-toast'
@@ -368,7 +369,7 @@ const handlePayment = async (razorpayOrder, mongoOrderId) => {
                   />
                   <span className="ml-3">UPI</span>
                 </label>
-                <label className="flex items-center cursor-pointer">
+                {/* <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -378,7 +379,7 @@ const handlePayment = async (razorpayOrder, mongoOrderId) => {
                     className="w-4 h-4"
                   />
                   <span className="ml-3">Cash on Delivery</span>
-                </label>
+                </label> */}
               </div>
             </div>
           </form>
@@ -431,7 +432,7 @@ const handlePayment = async (razorpayOrder, mongoOrderId) => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full bg-[#00354B] text-white py-3 rounded font-semibold hover:bg-opacity-90 disabled:opacity-50 transition"
+              className="w-full bg-[#4A0015] text-white py-3 rounded font-semibold hover:bg-opacity-90 disabled:opacity-50 transition"
             >
               {loading ? 'Processing...' : 'Place Order'}
             </button>
