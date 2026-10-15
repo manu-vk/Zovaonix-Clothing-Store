@@ -11,30 +11,48 @@ const ProductPage = () => {
   const [showFilter, setShowFilter] = useState(false);
 
 
-  useEffect(() => {
-    if (typeof searchQuery === 'string' && searchQuery.trim().length > 0) {
-      setFilteredProducts(
-        products.filter(product =>
-          product.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      )
-    } else {
-      setFilteredProducts(products)
-    }
-  }, [products, searchQuery])
+  
 
-  const sortHighToLow = () => {
-    const sorted = [...filteredProducts].sort(
-      (a, b) => b.offerPrice - a.offerPrice
-    )
-    setFilteredProducts(sorted)
+useEffect(() => {
+  const query =
+    (typeof searchQuery === "string" ? searchQuery : "")
+      .trim()
+      .toLowerCase();
+
+  if (!query) {
+    setFilteredProducts(products);
+    return;
   }
-  const sortLowToHigh = () => {
-    const sorted = [...filteredProducts].sort(
-      (a, b) => a.offerPrice - b.offerPrice
+
+  const filtered = products.filter((product) => {
+    return (
+      String(product.title || "").toLowerCase().includes(query) ||
+      String(product.brand || "").toLowerCase().includes(query) ||
+      String(product.description || "").toLowerCase().includes(query)
+    );
+  });
+
+  setFilteredProducts(filtered);
+}, [products, searchQuery]);
+
+
+const sortLowToHigh = () => {
+  setFilteredProducts((prev) =>
+    [...prev].sort(
+      (a, b) => Number(a.offerPrice) - Number(b.offerPrice)
     )
-    setFilteredProducts(sorted)
-  }
+  );
+};
+
+const sortHighToLow = () => {
+  setFilteredProducts((prev) =>
+    [...prev].sort(
+      (a, b) => Number(b.offerPrice) - Number(a.offerPrice)
+    )
+  );
+};
+
+
 
   return (
     <>

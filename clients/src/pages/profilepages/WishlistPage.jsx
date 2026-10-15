@@ -117,7 +117,7 @@ const WishlistPage = () => {
                                             : assets.placeholderImage
                                     }
                                     alt={item.title}
-                                    className="w-full aspect-[3/4] object-cover rounded-lg sm:aspect-auto sm:h-40"
+                                    className="w-full aspect-[3/4] object-cover rounded-lg sm:aspect-auto sm:h-40 xl:object-contain xl:p-4"
                                 />
 
                                 <button

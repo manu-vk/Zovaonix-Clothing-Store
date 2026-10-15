@@ -13,7 +13,7 @@ const ProductView = () => {
 
   const [relatedProducts, setRelatedProducts] = useState([])
   const [thumbnail, setThumbnail] = useState(null)
-
+  const [selectedSize, setSelectedSize] = useState('')
 
   const product = products.find(
     (item) => String(item._id) === String(id)
@@ -21,7 +21,12 @@ const ProductView = () => {
 
 
   const handleBuyNow = async () => {
-    await addToCart(product._id);
+    if (!selectedSize) {
+      alert("Please select a size");
+      return;
+    }
+
+    await addToCart(product._id, thumbnail, selectedSize);
     navigate("/checkout");
   };
 
@@ -34,6 +39,8 @@ const ProductView = () => {
   const handleWish = (productId) => {
     addToWish(productId)
   }
+  console.log("PRODUCT ID:", product._id);
+  console.log("WISHLIST ITEMS:", wishItems);
   const handleShare = async () => {
     const shareData = {
       title: product.title,
@@ -108,12 +115,43 @@ const ProductView = () => {
               />
 
               <div className="absolute top-2 right-2 flex flex-col gap-1.5 sm:gap-2">
-                <img
+                {/* <img
                   onClick={() => handleWish(product._id)}
                   src={wishItems[product._id] ? assets.wishTrueIcon : assets.wishFalseIcon}
                   className="w-5 h-5 sm:w-6 sm:h-6 cursor-pointer"
                   alt="Wishlist"
-                />
+                /> */}
+
+
+                <svg
+                  onClick={() => handleWish(product._id)}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className={`w-5 h-5 sm:w-6 sm:h-6 cursor-pointer ${wishItems?.some(
+                    (item) => String(item.id) === String(product._id)
+                  )
+                    ? "text-red-500"
+                    : "text-gray-500"
+                    }`}
+                  fill={
+                    wishItems?.some(
+                      (item) => String(item.id) === String(product._id)
+                    )
+                      ? "currentColor"
+                      : "none"
+                  }
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"
+                  />
+                </svg>
+
+
+
 
                 <img
                   src={assets.shareIcon}
@@ -137,7 +175,15 @@ const ProductView = () => {
             </button>
 
             <button
-              onClick={() => addToCart(product._id)}
+              type="button"
+              onClick={() => {
+                if (!selectedSize) {
+                  alert("Please select a size");
+                  return;
+                }
+
+                addToCart(product._id, thumbnail,selectedSize);
+              }}
               className="border border-primary py-2"
             >
               Add to Cart
@@ -151,6 +197,32 @@ const ProductView = () => {
 
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p>{product.brand}</p>
+          {/* AVAILABLE SIZES */}
+          <div className="mt-5">
+            <p className="font-medium mb-3">Select Size</p>
+
+            <div className="flex flex-wrap gap-2">
+              {(product.sizes || ['S', 'M', 'L', 'XL', 'XXL']).map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setSelectedSize(size)}
+                  className={`min-w-10 h-10 px-3 border rounded ${selectedSize === size
+                    ? 'bg-primary text-white border-primary'
+                    : 'border-gray-300 hover:border-primary'
+                    }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+
+            {!selectedSize && (
+              <p className="text-sm text-gray-500 mt-2">
+                Please select a size before continuing.
+              </p>
+            )}
+          </div>
           <p className="text-gray-600 text-sm mt-3 leading-6 whitespace-pre-line">
             {product.description}
           </p>
@@ -168,7 +240,7 @@ const ProductView = () => {
             <span className="text-green-600">{off}% OFF</span>
           </div>
 
-          <div className="flex items-center gap-3 mt-4">
+          {/* <div className="flex items-center gap-3 mt-4">
 
 
             <button
@@ -194,7 +266,7 @@ const ProductView = () => {
             >
               +
             </button>
-          </div>
+          </div> */}
 
         </div>
 

@@ -49,6 +49,28 @@ const Cart = () => {
     navigate('/checkout')
   }
 
+  const handleShare = async () => {
+    const shareData = {
+      title: product.title,
+      text: `Check out ${product.title} at Zovaonyx!`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Product link copied!");
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Share failed:", error);
+      }
+    }
+  };
+
+
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl md:text-3xl font-semibold">Cart</h1>
@@ -76,16 +98,17 @@ const Cart = () => {
           <div className="lg:col-span-2 space-y-4">
             {cartArray.map(item => {
               // Backend returns flattened structure with 'id' field
-              const itemId = item.id || item.product?._id || item.productId
+              const itemId = item.cartId || item._id;
+              const productId = item.id || item.product?._id || item.productId;
               const title = item.title || item.product?.title
               const price = item.price || item.product?.price || 0
               const offerPrice = item.offerPrice || item.product?.offerPrice || item.product?.salePrice || 0
               const image = item.image || item.product?.image || []
               const off = price > 0 ? Math.round(((price - offerPrice) / price) * 100) : 0
-              
+
               return (
                 <div key={itemId} className="flex flex-col sm:flex-row gap-4 shadow-[0_0_3px_#24242453] rounded-lg p-4">
-                  <Link to={`/products/${itemId}`}>
+                  <Link to={`/products/${productId}`}>
                     <img
                       src={
                         image?.[0]
@@ -101,18 +124,23 @@ const Cart = () => {
 
                   <div className="flex-1">
                     <h3 className="font-medium text-sm md:text-base">{title}</h3>
+                    {item.selectedSize && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Size: <span className="font-medium">{item.selectedSize}</span>
+                      </p>
+                    )}
                     <div className="flex items-center gap-3 mt-2">
-                      <button 
+                      <button
                         disabled={loading}
-                        onClick={() => handleUpdateQuantity(itemId, item.quantity - 1)} 
+                        onClick={() => handleUpdateQuantity(itemId, item.quantity - 1)}
                         className="cursor-pointer border px-3 disabled:opacity-50"
                       >
                         −
                       </button>
                       <span>{item.quantity}</span>
-                      <button 
+                      <button
                         disabled={loading}
-                        onClick={() => handleUpdateQuantity(itemId, item.quantity + 1)} 
+                        onClick={() => handleUpdateQuantity(itemId, item.quantity + 1)}
                         className="cursor-pointer border px-3 disabled:opacity-50"
                       >
                         +
@@ -124,16 +152,45 @@ const Cart = () => {
                       {price !== offerPrice && <span className="text-green-600">{off}% off</span>}
                     </div>
                     <div className="flex flex-wrap gap-3 mt-3">
-                      <button 
+                      <button
                         disabled={loading}
-                        onClick={() => handleRemove(itemId)} 
+                        onClick={() => handleRemove(itemId)}
                         className="cursor-pointer border border-red-500 text-red-500 px-4 py-1 rounded text-sm disabled:opacity-50"
                       >
                         Delete
                       </button>
-                      <button className="cursor-pointer border px-4 py-1 rounded text-sm hover:bg-gray-50">Share</button>
-                      <button 
-                        onClick={() => navigate(`/products/${itemId}`)}
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const shareData = {
+                            title: item.title,
+                            text: `Check out ${item.title} at Zovaonyx!`,
+                            url: `${window.location.origin}/product/${item.id}`,
+                          };
+
+                          try {
+                            if (navigator.share) {
+                              await navigator.share(shareData);
+                            } else {
+                              await navigator.clipboard.writeText(shareData.url);
+                              alert("Product link copied!");
+                            }
+                          } catch (error) {
+                            if (error.name !== "AbortError") {
+                              console.error("Share failed:", error);
+                            }
+                          }
+                        }}
+                        className="cursor-pointer border px-4 py-1 rounded text-sm hover:bg-gray-50"
+                      >
+                        Share
+                      </button>
+
+
+
+                      <button
+                        onClick={() => navigate(`/products/${productId}`)}
                         className="cursor-pointer bg-[#4A0015] text-white px-6 py-1 rounded text-sm hover:bg-opacity-90"
                       >
                         View
@@ -166,7 +223,7 @@ const Cart = () => {
                 <span>₹{totalOffer}</span>
               </div>
             </div>
-            <button 
+            <button
               onClick={handleProceedToBuy}
               disabled={loading}
               className="cursor-pointer w-full bg-[#4A0015] text-white py-2 rounded mt-4 hover:bg-opacity-90 disabled:opacity-50 transition"

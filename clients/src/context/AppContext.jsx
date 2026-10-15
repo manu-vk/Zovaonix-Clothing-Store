@@ -29,6 +29,19 @@ export const AppContextProvider = ({ children }) => {
   const [orders, setOrders] = useState([])
   const [userOrders, setUserOrders] = useState([])
 
+const filteredProducts = products.filter((product) => {
+  const query = (
+    typeof searchQuery === "string" ? searchQuery : ""
+  ).trim().toLowerCase();
+  if (!query) return true;
+
+  return (
+    String(product.title || "").toLowerCase().includes(query) ||
+    String(product.brand || "").toLowerCase().includes(query) ||
+    String(product.description || "").toLowerCase().includes(query)
+  );
+});
+
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -71,51 +84,64 @@ export const AppContextProvider = ({ children }) => {
   }, []);
 
   // ==================================================================
-  const addToCart = async (productId) => {
-    try {
-      const token = localStorage.getItem("token");
+  // const addToCart = async (productId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
 
-      if (!token) {
-        toast.error("Please login to add items to cart");
-        navigate("/login");
-        return;
-      }
+  //     if (!token) {
+  //       toast.error("Please login to add items to cart");
+  //       navigate("/login");
+  //       return;
+  //     }
 
-      if (!productId) {
-        toast.error("Invalid product");
-        return;
-      }
+  //     if (!productId) {
+  //       toast.error("Invalid product");
+  //       return;
+  //     }
 
-      const res = await axios.post(
-        "https://zovaonix-backend.onrender.com/api/cart",
-        { productId, quantity: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+  //     const res = await axios.post(
+  //       "https://zovaonix-backend.onrender.com/api/cart",
+  //       { productId, quantity: 1 },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       }
+  //     );
 
-      toast.success("Added to cart!");
-      await fetchCart();
+  //     toast.success("Added to cart!");
+  //     await fetchCart();
 
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to add to cart";
-      toast.error(errorMessage);
-      console.log(err.response?.data || err.message);
-    }
-  };
-  const fetchCart = async () => {
+  //   } catch (err) {
+  //     const errorMessage = err.response?.data?.message || "Failed to add to cart";
+  //     toast.error(errorMessage);
+  //     console.log(err.response?.data || err.message);
+  //   }
+  // };
+  
+const addToCart = async (productId, selectedImage = null, selectedSize = null) => {
   try {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setCartItems({});
+      toast.error("Please login to add items to cart");
+      navigate("/login");
       return;
     }
 
-    const res = await axios.get(
+    if (!productId) {
+      toast.error("Invalid product");
+      return;
+    }
+
+    const res = await axios.post(
       "https://zovaonix-backend.onrender.com/api/cart",
+      {
+        productId,
+        quantity: 1,
+        selectedImage,
+        selectedSize,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,98 +149,164 @@ export const AppContextProvider = ({ children }) => {
       }
     );
 
-    console.log("Cart fetched:", res.data);
+    toast.success("Added to cart!");
+    await fetchCart();
+  } catch (err) {
+    const errorMessage =
+      err.response?.data?.message || "Failed to add to cart";
 
-    const cartData = res.data?.cart;
+    toast.error(errorMessage);
+    console.log(err.response?.data || err.message);
+  }
+};
 
-    if (Array.isArray(cartData)) {
-      const cartObject = {};
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token in fetchCart");
+        setCartItems([]);
+        return;
+      }
 
-      cartData.forEach((item) => {
-        const productId =
-          typeof item.productId === "object"
-            ? item.productId?._id
-            : item.productId;
-
-        if (productId) {
-          cartObject[productId] = Number(item.quantity) || 0;
-        }
+      const res = await axios.get("https://zovaonix-backend.onrender.com/api/cart", {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      setCartItems(cartObject);
-    } else if (cartData && typeof cartData === "object") {
-      setCartItems(cartData);
-    } else {
-      setCartItems({});
+      // console.log("Cart fetched:", res.data);
+      console.log("Cart fetched:", JSON.stringify(res.data.cart, null, 2));
+
+      if (res.data && res.data.cart) {
+        setCartItems(res.data.cart);
+      } else {
+        console.warn("No cart data in response");
+        setCartItems([]);
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err.response?.data || err.message);
+      setCartItems([]);
     }
-  } catch (err) {
-    console.error(
-      "Error fetching cart:",
-      err.response?.data || err.message
+  };
+
+
+  // const updateCartItem = async (productId, quantity) => {
+    
+  //   try {
+  //     const token = localStorage.getItem("token");
+
+  //     if (!token) {
+  //       toast.error("Please login first");
+  //       return;
+  //     }
+
+  //     if (quantity < 0) {
+  //       toast.error("Quantity cannot be negative");
+  //       return;
+  //     }
+
+  //     if (quantity === 0) {
+  //       await removeCartItem(productId);
+  //       return;
+  //     }
+
+  //     const res = await axios.put("https://zovaonix-backend.onrender.com/api/cart", {
+  //       productId,
+  //       quantity
+  //     }, {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
+
+  //     console.log("Cart updated:", res.data);
+  //     await fetchCart();
+  //     toast.success("Quantity updated");
+  //   } catch (err) {
+  //     const errorMessage = err.response?.data?.message || "Failed to update cart";
+  //     toast.error(errorMessage);
+  //     console.error("Update error:", err.response?.data || err.message);
+  //   }
+  // };
+  
+const updateCartItem = async (cartId, quantity) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Please login first");
+      return;
+    }
+
+    if (quantity < 1) return;
+
+    await axios.put(
+      "https://zovaonix-backend.onrender.com/api/cart",
+      { cartId, quantity },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
     );
-    setCartItems({});
+
+    await fetchCart();
+    toast.success("Quantity updated");
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message || "Failed to update cart"
+    );
+    console.error("Update error:", err.response?.data || err.message);
   }
 };
 
 
-  const updateCartItem = async (productId, quantity) => {
-    try {
-      const token = localStorage.getItem("token");
+  // const removeCartItem = async (productId) => {
 
-      if (!token) {
-        toast.error("Please login first");
-        return;
-      }
+  //   try {
+  //     const token = localStorage.getItem("token");
 
-      if (quantity < 0) {
-        toast.error("Quantity cannot be negative");
-        return;
-      }
+  //     if (!token) {
+  //       toast.error("Please login first");
+  //       return;
+  //     }
 
-      if (quantity === 0) {
-        await removeCartItem(productId);
-        return;
-      }
+  //     const res = await axios.delete(`https://zovaonix-backend.onrender.com/api/cart/${productId}`, {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
 
-      const res = await axios.put("https://zovaonix-backend.onrender.com/api/cart", {
-        productId,
-        quantity
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  //     console.log("Item removed:", res.data);
+  //     await fetchCart();
+  //     toast.success("Item removed from cart");
+  //   } catch (err) {
+  //     const errorMessage = err.response?.data?.message || "Failed to remove item";
+  //     toast.error(errorMessage);
+  //     console.error("Delete error:", err.response?.data || err.message);
+  //   }
+  // };
+ 
+const removeCartItem = async (cartId) => {
+  try {
+    const token = localStorage.getItem("token");
 
-      console.log("Cart updated:", res.data);
-      await fetchCart();
-      toast.success("Quantity updated");
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to update cart";
-      toast.error(errorMessage);
-      console.error("Update error:", err.response?.data || err.message);
+    if (!token) {
+      toast.error("Please login first");
+      return;
     }
-  };
 
-  const removeCartItem = async (productId) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("Please login first");
-        return;
+    await axios.delete(
+      `https://zovaonix-backend.onrender.com/api/cart/${cartId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
+    );
 
-      const res = await axios.delete(`https://zovaonix-backend.onrender.com/api/cart/${productId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    await fetchCart();
+    toast.success("Item removed from cart");
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message || "Failed to remove item"
+    );
+    console.log("Delete URL ID:", cartId);
+    console.error("Delete error:", err.response?.data || err.message);
+  }
+};
 
-      console.log("Item removed:", res.data);
-      await fetchCart();
-      toast.success("Item removed from cart");
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to remove item";
-      toast.error(errorMessage);
-      console.error("Delete error:", err.response?.data || err.message);
-    }
-  };
   const getCartCount = () => {
     if (!cartItems || !Array.isArray(cartItems)) {
       return 0;

@@ -50,10 +50,11 @@ body,
   .mainbannerImg,
   .mainSecbannerImg {
     background-position: center 40%;
-      background-size: 55% auto;
+      background-size: 75% auto;
   }
  
 }
+
 @media (min-width:362px) {
   
   .mainSecbannerImg {

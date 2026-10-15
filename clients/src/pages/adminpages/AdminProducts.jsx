@@ -18,7 +18,8 @@ const AdminProducts = () => {
         ratingCount: '',
         image: ['', '', ''],
         description: '',
-        stock: ''
+        stock: '',
+        sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     });
 
     // const categories = ['Eau De Parfum', 'Concentrated', 'Deodorants', 'Body Mist', 'Combo'];
@@ -26,6 +27,14 @@ const AdminProducts = () => {
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setFormData(prev => ({ ...prev, [id]: value }));
+    };
+    const handleSizeChange = (size) => {
+        setFormData(prev => ({
+            ...prev,
+            sizes: prev.sizes.includes(size)
+                ? prev.sizes.filter(s => s !== size)
+                : [...prev.sizes, size]
+        }));
     };
 
     const handleImageChange = (index, e) => {
@@ -58,6 +67,7 @@ const AdminProducts = () => {
         data.append("price", formData.price);
         data.append("offerPrice", formData.offerPrice);
         data.append("stock", formData.stock);
+        data.append("sizes", JSON.stringify(formData.sizes));
         data.append("description", formData.description);
         data.append("rating", formData.rating);
         data.append("ratingCount", formData.ratingCount);
@@ -88,6 +98,7 @@ const AdminProducts = () => {
             ratingCount: product.ratingCount,
             stock: product.stock,
             description: product.description || '',
+            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
             // image: [...product.image]
         });
         setShowAddForm(true);
@@ -108,7 +119,8 @@ const AdminProducts = () => {
             ratingCount: '',
             image: ['', '', ''],
             description: '',
-            stock: ''
+            stock: '',
+            sizes: ['S', 'M', 'L', 'XL', 'XXL'],
         });
         setEditingProduct(null);
         setShowAddForm(false);
@@ -200,6 +212,30 @@ const AdminProducts = () => {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Rating</label>
                                 <input id="rating" value={formData.rating} onChange={handleInputChange} type="number" step="0.1" max="5" placeholder="Rating" className="w-full p-2 border rounded" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">
+                                    Available Sizes *
+                                </label>
+
+                                <div className="flex flex-wrap gap-3">
+                                    {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                        <label
+                                            key={size}
+                                            className={`flex items-center gap-2 border rounded-lg px-4 py-2 cursor-pointer ${formData.sizes.includes(size)
+                                                    ? 'border-primary bg-pink-50'
+                                                    : 'border-gray-300'
+                                                }`}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.sizes.includes(size)}
+                                                onChange={() => handleSizeChange(size)}
+                                            />
+                                            <span>{size}</span>
+                                        </label>
+                                    ))}
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Rating Count</label>

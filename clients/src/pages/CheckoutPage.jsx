@@ -105,69 +105,69 @@ const CheckoutPage = () => {
     });
   };
 
- 
-const handlePayment = async (razorpayOrder, mongoOrderId) => {
-  try {
-    const isScriptLoaded = await loadRazorpayScript();
 
-    if (!isScriptLoaded) {
-      alert("Failed to load Razorpay SDK. Please check your internet connection.");
-      return;
-    }
+  const handlePayment = async (razorpayOrder, mongoOrderId) => {
+    try {
+      const isScriptLoaded = await loadRazorpayScript();
 
-    const options = {
-      key: "rzp_test_Tndz3GpN0eA0vG",
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency || "INR",
-      name: "Cart7",
-      description: "Purchase Description",
-      order_id: razorpayOrder.id,
+      if (!isScriptLoaded) {
+        alert("Failed to load Razorpay SDK. Please check your internet connection.");
+        return;
+      }
 
-      handler: async function (response) {
-        try {
-          const verifyRes = await axios.post(
-            "https://zovaonix-backend.onrender.com/api/order/payment/verify-payment",
-            {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              orderId: mongoOrderId,
+      const options = {
+        key: "rzp_test_Tndz3GpN0eA0vG",
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency || "INR",
+        name: "Cart7",
+        description: "Purchase Description",
+        order_id: razorpayOrder.id,
+
+        handler: async function (response) {
+          try {
+            const verifyRes = await axios.post(
+              "https://zovaonix-backend.onrender.com/api/order/payment/verify-payment",
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: mongoOrderId,
+              }
+            );
+
+            if (verifyRes.data.success) {
+              toast.success("Payment successful!");
+              navigate("/order-success");
+            } else {
+              toast.error("Payment verification failed!");
             }
-          );
-
-          if (verifyRes.data.success) {
-            toast.success("Payment successful!");
-            navigate("/order-success");
-          } else {
-            toast.error("Payment verification failed!");
+          } catch (error) {
+            console.error(
+              "Payment verification error:",
+              error.response?.data || error.message
+            );
+            toast.error("Could not verify payment. Please contact support before retrying.");
           }
-        } catch (error) {
-          console.error(
-            "Payment verification error:",
-            error.response?.data || error.message
-          );
-          toast.error("Could not verify payment. Please contact support before retrying.");
-        }
-      },
+        },
 
-      theme: {
-        color: "#3399cc",
-      },
-    };
+        theme: {
+          color: "#3399cc",
+        },
+      };
 
-    const rzp1 = new window.Razorpay(options);
+      const rzp1 = new window.Razorpay(options);
 
-    rzp1.on("payment.failed", function (response) {
-      console.error("Razorpay payment failed:", response.error);
-      toast.error("Payment failed. Please try again.");
-    });
+      rzp1.on("payment.failed", function (response) {
+        console.error("Razorpay payment failed:", response.error);
+        toast.error("Payment failed. Please try again.");
+      });
 
-    rzp1.open();
-  } catch (error) {
-    console.error("Payment Error:", error);
-    toast.error("Unable to open payment checkout.");
-  }
-};
+      rzp1.open();
+    } catch (error) {
+      console.error("Payment Error:", error);
+      toast.error("Unable to open payment checkout.");
+    }
+  };
 
   // --------------------------------------------------------
 
@@ -206,6 +206,7 @@ const handlePayment = async (razorpayOrder, mongoOrderId) => {
           "",
 
         quantity: item.quantity || 1,
+        size: item.selectedSize || null,
       }));
 
       const orderData = {
@@ -394,7 +395,11 @@ const handlePayment = async (razorpayOrder, mongoOrderId) => {
             <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
               {cartArray.map(item => (
                 <div key={item.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600">{item.title} x {item.quantity}</span>
+                  <span className="text-gray-600">
+                    {item.title}
+                    {item.selectedSize && ` (Size: ${item.selectedSize})`}
+                    {" x "}{item.quantity}
+                  </span>
                   <span className="font-semibold">₹{item.offerPrice * item.quantity}</span>
                 </div>
               ))}

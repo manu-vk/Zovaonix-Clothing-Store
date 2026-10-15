@@ -80,9 +80,25 @@ const AdminOrdersPage = () => {
                         <p className='text-gray-500 text-xs'>{order.userId?.email || 'N/A'}</p>
                       </div>
                     </td>
+
                     <td className='px-6 py-4 text-sm'>
-                      {order.items.length} item{order.items.length !== 1 ? 's' : ''}
+                      <div className="space-y-2">
+                        {order.items.map((item, index) => (
+                          <div key={item._id || index}>
+                            <p className="font-medium">
+                              {item.name || item.productId?.title || 'Product'}
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              Size: {item.size || 'Not specified'}
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              Qty: {item.quantity}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </td>
+
                     <td className='px-6 py-4 text-sm font-semibold'>
                       ₹{order.totalAmount}
                     </td>

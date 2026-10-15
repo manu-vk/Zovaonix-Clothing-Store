@@ -30,7 +30,9 @@ const OrdersHistory = () => {
     }
 
     return (
-        <div className="md:p-10 p-4 space-y-4">
+       
+<div className="md:p-10 p-4 space-y-4 md:h-screen md:overflow-hidden flex flex-col">
+
             
 {/* Mobile account menu */}
 <div className="mb-4 md:hidden">
@@ -68,8 +70,15 @@ const OrdersHistory = () => {
 )}
 
             
-            <h2 className="text-primary text-lg font-medium">Orders List</h2>
-            {userOrders && userOrders.length > 0 ? (
+            
+<div className="flex-1 min-h-0 flex flex-col">
+    <h2 className="text-primary text-lg font-medium mb-4 shrink-0">
+        Orders List
+    </h2>
+
+    <div className="flex-1 min-h-0 overflow-y-auto space-y-4 pr-2">
+        {userOrders && userOrders.length > 0 ? (
+
                 userOrders.map((order) => (
                     <div key={order._id} className="flex flex-col gap-4 p-6 max-w-4xl rounded-md border border-gray-300 bg-white hover:shadow-lg transition">
                         <div className="flex justify-between items-start">
@@ -143,6 +152,8 @@ const OrdersHistory = () => {
                     <p className="text-sm text-gray-400 mt-2">Your orders will appear here once you place them</p>
                 </div>
             )}
+            </div>
+        </div>
         </div>
     );
 };

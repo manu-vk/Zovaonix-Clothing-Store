@@ -2,7 +2,9 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
-
+import { useGoogleLogin } from '@react-oauth/google'
+import { GoogleLogin } from '@react-oauth/google'
+import axios from 'axios'
 const Register = () => {
 
   const { adduser, testuser } = useContext(AppContext);
@@ -29,27 +31,104 @@ const Register = () => {
     setPassword('')
   }
 
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const res = await axios.post(
+          // 'https://zovaonix-backend.onrender.com/api/user/google',
+          'http://localhost:5000/api/user/google',
+          { credential: response.credential }
+        );
+
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+
+        window.location.href = '/';
+      } catch (error) {
+        console.error(
+          'Google login error:',
+          error.response?.data || error.message
+        );
+        alert(
+          error.response?.data?.message ||
+          'Google login failed. Please try again.'
+        );
+      }
+    },
+    onError: () => {
+      alert('Google sign-in was unsuccessful. Please try again.');
+    },
+  });
+
+
 
   return (
     <div className="min-h-screen flex justify-center px-4 py-10">
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-2xl overflow-hidden">
+
         <div className="hidden lg:block">
-          <div className="h-full registerImgArea rounded-[10px_200px_10px_200px]">
-            <div className="h-full flex flex-col items-center justify-center text-center text-white bg-black/60 rounded-[10px_200px_10px_200px] px-14">
-              <h1 className="text-4xl font-bold mb-3">Welcome Back</h1>
-              <p className="text-base opacity-90 max-w-md">Glad to see you again! Access your <br /> account to explore more</p>
+          <div className="relative h-full min-h-[600px] overflow-hidden rounded-[200px_10px_200px_0]">
+
+            <img
+              src={assets.clothingBanner2}
+              alt="Zovaonix clothing collection"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+
+            <div className="absolute inset-0 flex flex-col items-center  justify-center  text-center text-white bg-[#5B1830]/55 px-8">
+              <p className="text-sm uppercase tracking-[0.3em] mb-4 translate-y-38 ">
+                Discover Your Style
+              </p>
+
+              <h1 className="text-4xl font-bold mb-4 translate-y-38 ">
+                Welcome Back
+              </h1>
+
+
+
+              <div className="w-16 h-1 bg-white mt-6 rounded-full" />
             </div>
+
           </div>
         </div>
 
+
         <div className="flex flex-col justify-center px-8 sm:px-14 py-14 w-full">
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <button className="flex items-center justify-center gap-3 border-2 border-black py-3 rounded w-full cursor-pointer">
-              <img src={assets.googleAuthIcon} alt="" className="w-6 h-6" />Google
-            </button>
-            <button className="flex items-center justify-center gap-3 border-2 border-black py-3 rounded w-full cursor-pointer">
+
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await axios.post(
+                    // 'https://zovaonix-backend.onrender.com/api/user/google',
+                    'http://localhost:5000/api/user/google',
+                    { credential: credentialResponse.credential }
+                  );
+
+                  localStorage.setItem('token', res.data.token);
+                  localStorage.setItem('user', JSON.stringify(res.data.user));
+
+                  window.location.href = '/';
+                } catch (error) {
+                  console.error(
+                    'Google login error:',
+                    error.response?.data || error.message
+                  );
+                  alert(
+                    error.response?.data?.message ||
+                    'Google sign-in failed. Please try again.'
+                  );
+                }
+              }}
+              onError={() => alert('Google sign-in failed. Please try again.')}
+              text="signup_with"
+              shape="rectangular"
+              width="300"
+            />
+
+            {/* <button className="flex items-center justify-center gap-3 border-2 border-black py-3 rounded w-full cursor-pointer">
               <img src={assets.facebookAuthIcon} alt="" className="w-6 h-6" />Facebook
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center my-1 text-sm text-gray-600">
