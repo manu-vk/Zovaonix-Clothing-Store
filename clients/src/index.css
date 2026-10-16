@@ -46,11 +46,12 @@ body,
   }
 }
 
+
 @media (min-width: 1024px) {
   .mainbannerImg,
   .mainSecbannerImg {
-    background-position: center 40%;
-      background-size: 75% auto;
+    background-position: center 50%;
+      background-size: 100% auto;
   }
  
 }

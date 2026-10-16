@@ -35,8 +35,8 @@ const Register = () => {
     onSuccess: async (response) => {
       try {
         const res = await axios.post(
-          // 'https://zovaonix-backend.onrender.com/api/user/google',
-          'http://localhost:5000/api/user/google',
+          'https://zovaonix-backend.onrender.com/api/user/google',
+          // 'http://localhost:5000/api/user/google',
           { credential: response.credential }
         );
 
@@ -100,8 +100,8 @@ const Register = () => {
               onSuccess={async (credentialResponse) => {
                 try {
                   const res = await axios.post(
-                    // 'https://zovaonix-backend.onrender.com/api/user/google',
-                    'http://localhost:5000/api/user/google',
+                    'https://zovaonix-backend.onrender.com/api/user/google',
+                    // 'http://localhost:5000/api/user/google',
                     { credential: credentialResponse.credential }
                   );
 
