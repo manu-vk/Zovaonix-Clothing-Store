@@ -78,8 +78,13 @@ const getProduct = async (req, res) => {
     }
 };
 
+
 const addProduct = async (req, res) => {
     try {
+        const sizes = req.body.sizes
+            ? JSON.parse(req.body.sizes)
+            : ["S", "M", "L", "XL", "XXL"];
+
         const images = req.files
             ? await Promise.all(
                 req.files.map(async (file) => {
@@ -96,18 +101,14 @@ const addProduct = async (req, res) => {
         });
 
         res.status(201).json(product);
-
-        const sizes = req.body.sizes
-            ? JSON.parse(req.body.sizes)
-            : ["S", "M", "L", "XL", "XXL"];
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).json({
             message: error.message,
         });
     }
 };
+
 
 const deleteProduct = async (req, res) => {
     try {
@@ -131,8 +132,8 @@ const updateProduct = async (req, res) => {
             ...req.body,
         };
         if (req.body.sizes) {
-    updateData.sizes = JSON.parse(req.body.sizes);
-}
+            updateData.sizes = JSON.parse(req.body.sizes);
+        }
 
         if (req.files && req.files.length > 0) {
             const images = await Promise.all(
