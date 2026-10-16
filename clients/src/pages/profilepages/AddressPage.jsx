@@ -9,6 +9,7 @@ const AddressPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [addresses, setAddresses] = useState([]);
 
+
   const [newAddress, setNewAddress] = useState({
     fullName: "",
     phoneNumber: "",
@@ -20,6 +21,7 @@ const AddressPage = () => {
   });
 
   const [showForm, setShowForm] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState(null);
 
   const fetchAddresses = async () => {
     try {
@@ -46,19 +48,36 @@ const AddressPage = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.post(
-        "https://zovaonix-backend.onrender.com/api/address",
-        newAddress,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      if (editingAddressId) {
+        await axios.put(
+          `https://zovaonix-backend.onrender.com/api/address/${editingAddressId}`,
+          newAddress,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } else {
+        await axios.post(
+          "https://zovaonix-backend.onrender.com/api/address",
+          newAddress,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
 
-      toast.success("Address added successfully");
+      toast.success(
+        editingAddressId
+          ? "Address updated successfully"
+          : "Address added successfully"
+      );
       await fetchAddresses();
       setShowForm(false);
+      setEditingAddressId(null);
 
       setNewAddress({
         fullName: "",
@@ -118,6 +137,23 @@ const AddressPage = () => {
     }
   };
 
+  const handleEditAddress = (addr) => {
+    setEditingAddressId(addr._id);
+
+    setNewAddress({
+      fullName: addr.fullName || "",
+      phoneNumber: addr.phoneNumber || "",
+      streetAddress: addr.streetAddress || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      pincode: addr.pincode || "",
+      isDefault: addr.isDefault || false,
+    });
+
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   useEffect(() => {
     fetchAddresses();
   }, []);
@@ -125,7 +161,7 @@ const AddressPage = () => {
   return (
     <div className="mx-auto max-w-7xl p-2 min-[564px]:p-4">
       <div className="flex items-start gap-4 min-[564px]:gap-6">
- {/* Address Content */}
+        {/* Address Content */}
         <main className="min-w-0 flex-1">
 
           {/* Mobile Account Menu: below 564px */}
@@ -182,7 +218,7 @@ const AddressPage = () => {
           {showForm && (
             <div className="mb-5 rounded-xl border bg-white p-3 min-[400px]:p-4 min-[564px]:mb-6 min-[564px]:p-6">
               <h2 className="text-primary mb-4 text-base font-semibold min-[400px]:text-lg">
-                Add New Address
+                {editingAddressId ? "Edit Address" : "Add New Address"}
               </h2>
 
               <form
@@ -296,7 +332,7 @@ const AddressPage = () => {
                     type="submit"
                     className="rounded-lg bg-primary px-4 py-2 text-xs text-white hover:bg-primary-dull min-[400px]:px-6 min-[400px]:text-sm"
                   >
-                    Save Address
+                    {editingAddressId ? "Save Changes" : "Save Address"}
                   </button>
                 </div>
               </form>
@@ -308,9 +344,8 @@ const AddressPage = () => {
             {addresses.map((addr) => (
               <div
                 key={addr._id}
-                className={`min-w-0 rounded-xl border p-3 min-[400px]:p-4 min-[564px]:p-5 ${
-                  addr.isDefault ? "border-2 border-[#800020]" : ""
-                }`}
+                className={`min-w-0 rounded-xl border p-3 min-[400px]:p-4 min-[564px]:p-5 ${addr.isDefault ? "border-2 border-[#800020]" : ""
+                  }`}
               >
                 {addr.isDefault && (
                   <span className="mb-2 inline-block rounded-full bg-primary px-2.5 py-1 text-[10px] text-white min-[400px]:text-xs">
@@ -333,6 +368,12 @@ const AddressPage = () => {
                           Set Default
                         </button>
                       )}
+                      <button
+                        onClick={() => handleEditAddress(addr)}
+                        className="text-[10px] text-primary hover:underline min-[400px]:text-xs"
+                      >
+                        Edit
+                      </button>
 
                       <button
                         onClick={() => {

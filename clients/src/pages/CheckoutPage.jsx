@@ -31,6 +31,48 @@ const CheckoutPage = () => {
     }
   }, [user])
 
+  useEffect(() => {
+    const fetchDefaultAddress = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        const res = await axios.get(
+          "https://zovaonix-backend.onrender.com/api/address",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const addresses = Array.isArray(res.data) ? res.data : [];
+        const defaultAddress = addresses.find((addr) => addr.isDefault);
+
+        if (defaultAddress) {
+          setFormData((prev) => ({
+            ...prev,
+            fullName: defaultAddress.fullName || prev.fullName,
+            phone: defaultAddress.phoneNumber || prev.phone,
+            address: defaultAddress.streetAddress || "",
+            city: defaultAddress.city || "",
+            state: defaultAddress.state || "",
+            zipCode: defaultAddress.pincode || "",
+          }));
+        }
+      } catch (error) {
+        console.error(
+          "Failed to fetch default address:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchDefaultAddress();
+  }, []);
+
+
   const cartArray = cartItems && cartItems.length > 0 ? cartItems : []
   const totalPrice = cartArray.reduce((a, i) => a + ((i.price || 0) * (i.quantity || 0)), 0)
   const totalOffer = cartArray.reduce((a, i) => a + (((i.offerPrice && i.offerPrice > 0) ? i.offerPrice : i.price || 0) * (i.quantity || 0)), 0)
@@ -172,10 +214,101 @@ const CheckoutPage = () => {
   // --------------------------------------------------------
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) return;
+
+  //   try {
+  //     setLoading(true);
+
+  //     const orderItems = cartArray.map((item) => ({
+  //       productId:
+  //         item.product?._id ||
+  //         item.productId ||
+  //         item._id ||
+  //         item.id,
+
+  //       name:
+  //         item.product?.title ||
+  //         item.title ||
+  //         "Product",
+
+  //       price:
+  //         item.product?.offerPrice ||
+  //         item.product?.price ||
+  //         item.offerPrice ||
+  //         item.price ||
+  //         0,
+
+  //       image:
+  //         item.product?.image?.[0] ||
+  //         item.image?.[0] ||
+  //         item.image ||
+  //         "",
+
+  //       quantity: item.quantity || 1,
+  //       size: item.selectedSize || null,
+  //     }));
+
+  //     const orderData = {
+  //       items: orderItems,
+  //       totalAmount: totalOffer,
+  //       paymentMethod: mapPaymentMethod(formData.paymentMethod),
+  //       phone: formData.phone,
+  //       address: `${formData.address}, ${formData.city}, ${formData.state}, ${formData.zipCode}`,
+  //       orderId: `ORD-${Date.now()}`,
+  //     };
+
+  //     console.log("ORDER DATA:", orderData);
+
+  //     const result = await createOrder(orderData);
+
+  //     if (!result) {
+  //       return;
+  //     }
+
+  //     console.log("Order created:", result);
+
+  //     const paymentMethod = result.paymentMethod;
+
+  //     if (paymentMethod === "UPI") {
+  //       if (result.razorpayOrder) {
+  //         handlePayment(result.razorpayOrder, result.order._id);
+  //       } else {
+  //         toast.error("Payment order details are missing");
+  //       }
+  //     } else if (
+  //       paymentMethod === "COD" ||
+  //       paymentMethod === "Cash on Delivery"
+  //     ) {
+  //       toast.success("Order placed successfully!");
+
+  //       setTimeout(() => {
+  //         navigate("/order-success");
+  //       }, 1500);
+  //     } else {
+  //       toast.error(`Unsupported payment method: ${paymentMethod}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to place order:", error);
+  //     toast.error("Failed to place order");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const ADMIN_WHATSAPP_NUMBER = "918590775382";
+
+  const handleWhatsAppOrder = async (e) => {
+    e?.preventDefault();
 
     if (!validateForm()) return;
+
+    if (!cartArray || cartArray.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -212,45 +345,67 @@ const CheckoutPage = () => {
       const orderData = {
         items: orderItems,
         totalAmount: totalOffer,
-        paymentMethod: mapPaymentMethod(formData.paymentMethod),
+        paymentMethod: "COD",
         phone: formData.phone,
         address: `${formData.address}, ${formData.city}, ${formData.state}, ${formData.zipCode}`,
         orderId: `ORD-${Date.now()}`,
       };
 
-      console.log("ORDER DATA:", orderData);
-
+      // Save the order using the existing backend API
       const result = await createOrder(orderData);
 
       if (!result) {
+        toast.error("Order could not be saved. Please try again.");
         return;
       }
 
-      console.log("Order created:", result);
+      const itemsText = cartArray
+        .map((item) => {
+          const price =
+            item.offerPrice && item.offerPrice > 0
+              ? item.offerPrice
+              : item.price || 0;
 
-      const paymentMethod = result.paymentMethod;
+          return `${item.title || "Product"}${item.selectedSize ? ` (Size: ${item.selectedSize})` : ""
+            } x ${item.quantity || 1} - ₹${price * (item.quantity || 1)
+            }`;
+        })
+        .join("\n");
 
-      if (paymentMethod === "UPI") {
-        if (result.razorpayOrder) {
-          handlePayment(result.razorpayOrder, result.order._id);
-        } else {
-          toast.error("Payment order details are missing");
-        }
-      } else if (
-        paymentMethod === "COD" ||
-        paymentMethod === "Cash on Delivery"
-      ) {
-        toast.success("Order placed successfully!");
+      const message = `
+Hello Zovaonix! I would like to confirm my order.
 
-        setTimeout(() => {
-          navigate("/order-success");
-        }, 1500);
-      } else {
-        toast.error(`Unsupported payment method: ${paymentMethod}`);
-      }
+Order ID: ${result.order?.orderId || orderData.orderId}
+Name: ${formData.fullName}
+Phone: ${formData.phone}
+Email: ${formData.email}
+
+Address:
+${orderData.address}
+
+Items:
+${itemsText}
+
+Total: ₹${totalOffer}
+Payment: Cash on Delivery
+
+Please confirm my order.
+    `.trim();
+
+      const whatsappUrl =
+        `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=` +
+        encodeURIComponent(message);
+
+      toast.success("Order saved successfully!");
+
+      // Open WhatsApp after the order has been saved
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+
+      // Go to the existing order success page
+      navigate("/order-success");
     } catch (error) {
-      console.error("Failed to place order:", error);
-      toast.error("Failed to place order");
+      console.error("Failed to place WhatsApp order:", error);
+      toast.error("Failed to place order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -272,7 +427,7 @@ const CheckoutPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Checkout Form */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleWhatsAppOrder} className="space-y-6">
             {/* Shipping Details */}
             <div className="shadow-[0_0_3px_#24242453] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Shipping Details</h2>
@@ -345,10 +500,10 @@ const CheckoutPage = () => {
             </div>
 
             {/* Payment Method */}
-            <div className="shadow-[0_0_3px_#24242453] rounded-lg p-6">
+            {/* <div className="shadow-[0_0_3px_#24242453] rounded-lg p-6">
               <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
-              <div className="space-y-3">
-                {/* <label className="flex items-center cursor-pointer">
+              <div className="space-y-3"> */}
+            {/* <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -359,7 +514,7 @@ const CheckoutPage = () => {
                   />
                   <span className="ml-3">Credit/Debit Card</span>
                 </label> */}
-                <label className="flex items-center cursor-pointer">
+            {/* <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -369,8 +524,8 @@ const CheckoutPage = () => {
                     className="w-4 h-4"
                   />
                   <span className="ml-3">UPI</span>
-                </label>
-                {/* <label className="flex items-center cursor-pointer">
+                </label> */}
+            {/* <label className="flex items-center cursor-pointer">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -381,8 +536,8 @@ const CheckoutPage = () => {
                   />
                   <span className="ml-3">Cash on Delivery</span>
                 </label> */}
-              </div>
-            </div>
+            {/* </div>
+            </div> */}
           </form>
         </div>
 
@@ -434,13 +589,15 @@ const CheckoutPage = () => {
               <span>₹{totalOffer}</span>
             </div>
 
+
             <button
-              onClick={handleSubmit}
+              type="button"
+              onClick={handleWhatsAppOrder}
               disabled={loading}
-              className="w-full bg-[#4A0015] text-white py-3 rounded font-semibold hover:bg-opacity-90 disabled:opacity-50 transition"
             >
-              {loading ? 'Processing...' : 'Place Order'}
+              {loading ? "Placing Order..." : "Order via WhatsApp"}
             </button>
+
 
             <p className="text-xs text-gray-500 mt-4 text-center">
               100% Safe & Secure. Money back guarantee.
