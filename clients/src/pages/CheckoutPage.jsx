@@ -359,6 +359,7 @@ const CheckoutPage = () => {
         return;
       }
 
+
       const itemsText = cartArray
         .map((item) => {
           const price =
@@ -366,11 +367,19 @@ const CheckoutPage = () => {
               ? item.offerPrice
               : item.price || 0;
 
-          return `${item.title || "Product"}${item.selectedSize ? ` (Size: ${item.selectedSize})` : ""
-            } x ${item.quantity || 1} - ₹${price * (item.quantity || 1)
-            }`;
+          const image =
+            item.product?.image?.[0] ||
+            item.image?.[0] ||
+            "";
+
+          return `${item.title || item.product?.title || "Product"}
+Size: ${item.selectedSize || "N/A"}
+Quantity: ${item.quantity || 1}
+Price: ₹${price * (item.quantity || 1)}
+Image: ${image}`;
         })
-        .join("\n");
+        .join("\n\n");
+
 
       const message = `
 Hello Zovaonix! I would like to confirm my order.
@@ -590,13 +599,16 @@ Please confirm my order.
             </div>
 
 
+
             <button
               type="button"
               onClick={handleWhatsAppOrder}
               disabled={loading}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Placing Order..." : "Order via WhatsApp"}
             </button>
+
 
 
             <p className="text-xs text-gray-500 mt-4 text-center">
