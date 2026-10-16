@@ -96,6 +96,7 @@ const addProduct = async (req, res) => {
 
         const product = await productModel.create({
             ...req.body,
+            isLimitedEdition: req.body.isLimitedEdition === "true",
             sizes,
             image: images,
         });
@@ -131,6 +132,10 @@ const updateProduct = async (req, res) => {
         const updateData = {
             ...req.body,
         };
+        if (req.body.isLimitedEdition !== undefined) {
+            updateData.isLimitedEdition =
+                req.body.isLimitedEdition === "true";
+        }
         if (req.body.sizes) {
             updateData.sizes = JSON.parse(req.body.sizes);
         }

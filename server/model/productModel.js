@@ -20,6 +20,10 @@ const ProductSchema = new mongoose.Schema({
     enum: ["S", "M", "L", "XL", "XXL"],
     default: ["S", "M", "L", "XL", "XXL"],
 },
+isLimitedEdition: {
+    type: Boolean,
+    default: false,
+},
     image: { type: [String], required: true },
 }, { timestamps: true });
 
