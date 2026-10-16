@@ -298,7 +298,7 @@ const CheckoutPage = () => {
   //   }
   // };
 
-  const ADMIN_WHATSAPP_NUMBER = "918590775382";
+  const ADMIN_WHATSAPP_NUMBER = "919037243300";
 
   const handleWhatsAppOrder = async (e) => {
     e?.preventDefault();
@@ -382,7 +382,7 @@ Image: ${image}`;
 
 
       const message = `
-Hello Zovaonix! I would like to confirm my order.
+Hello Zovaonyx! I would like to confirm my order.
 
 Order ID: ${result.order?.orderId || orderData.orderId}
 Name: ${formData.fullName}

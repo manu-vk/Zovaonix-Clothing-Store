@@ -45,6 +45,16 @@ const Homepage = () => {
       product.price > 0 &&
       ((product.price - product.offerPrice) / product.price) * 100 >= 20
   );
+  const shopLookScrollRef = useRef(null);
+
+  const scrollShopLook = (direction) => {
+    if (shopLookScrollRef.current) {
+      shopLookScrollRef.current.scrollBy({
+        left: direction * shopLookScrollRef.current.clientWidth * 0.8,
+        behavior: "smooth",
+      });
+    }
+  };
 
 
   return (
@@ -56,19 +66,52 @@ const Homepage = () => {
 
 
 
-        <div className='mt-23 flex justify-between items-center'>
-          <h1 className='sm:text-[20px] md:text-[25px] lg:text-[35px] font-semibold text-[#800020]'>Featured<span> Collections</span></h1>
 
+        <div className="mt-23 flex items-center justify-between">
+          <h1 className="text-[20px] font-semibold text-[#800020] md:text-[25px] lg:text-[35px]">
+            Shop the <span>Look</span>
+          </h1>
 
-        </div>
+          {/* Hide arrows on mobile */}
+          <div className="hidden gap-2 sm:flex">
+            <button
+              type="button"
+              onClick={() => scrollShopLook(-1)}
+              aria-label="Scroll Shop the Look left"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-full shadow-[0_0_3px_#24242453] hover:bg-gray-100"
+            >
+              <img src={assets.leftArrowIcon} alt="" className="h-5 w-5" />
+            </button>
 
-        <div className='flex justify-center '>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-2 sm:gap-7 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
-            {featured.slice(0, 5).map(product => (
-              <FeaturedCard key={product._id} product={product} />
-            ))}
+            <button
+              type="button"
+              onClick={() => scrollShopLook(1)}
+              aria-label="Scroll Shop the Look right"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-full shadow-[0_0_3px_#24242453] hover:bg-gray-100"
+            >
+              <img src={assets.rightArrowIcon} alt="" className="h-5 w-5" />
+            </button>
           </div>
         </div>
+
+        <div className="flex justify-center">
+          <div
+            ref={shopLookScrollRef}
+            className="w-full overflow-x-hidden sm:overflow-x-auto sm:scroll-smooth"
+          >
+            <div className="grid grid-cols-2 gap-3 p-2 sm:flex sm:w-max sm:flex-nowrap sm:gap-7 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
+              {featured.slice(0, 10).map((product) => (
+                <div
+                  key={product._id}
+                  className="min-w-0 sm:w-[200px] sm:shrink-0"
+                >
+                  <FeaturedCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
 
         <div className='flex justify-center items-center mt-4 text-center lg:text-2xl md:text-[20px] sm:text-sm text-black'>
           <div className='max-w-md px-4'>
@@ -133,11 +176,11 @@ const Homepage = () => {
           </div>
         </div>
         <div className="flex justify-center">
-  <div
-    ref={offersScrollRef}
-    className="w-full overflow-x-hidden sm:overflow-x-auto scroll-smooth"
-  >
-    <div className="
+          <div
+            ref={offersScrollRef}
+            className="w-full overflow-x-hidden sm:overflow-x-auto scroll-smooth"
+          >
+            <div className="
       grid
       grid-cols-2
       gap-3 p-2
@@ -145,17 +188,17 @@ const Homepage = () => {
       md:gap-7 md:p-5
       lg:gap-10 lg:p-6
     ">
-      {offerProducts.map(product => (
-        <div
-          key={product._id}
-          className="min-w-0 sm:w-[200px] sm:shrink-0"
-        >
-          <FeaturedCard product={product} />
+              {offerProducts.map(product => (
+                <div
+                  key={product._id}
+                  className="min-w-0 sm:w-[200px] sm:shrink-0"
+                >
+                  <FeaturedCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-</div>
 
 
 

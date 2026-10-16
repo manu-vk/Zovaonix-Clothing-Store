@@ -88,7 +88,7 @@ const Cart = () => {
             </svg>
             <h2 className="text-2xl font-semibold text-gray-700 mb-2">Your cart is empty</h2>
             <p className="text-gray-500 mb-4">Add some items to get started!</p>
-            <Link to="/products" className="inline-block bg-[#00354B] text-white px-6 py-2 rounded hover:bg-opacity-90 transition">
+            <Link to="/products" className="inline-block bg-[#800020] text-white px-6 py-2 rounded hover:bg-opacity-90 transition">
               Continue Shopping
             </Link>
           </div>

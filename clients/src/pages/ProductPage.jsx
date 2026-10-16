@@ -11,46 +11,46 @@ const ProductPage = () => {
   const [showFilter, setShowFilter] = useState(false);
 
 
-  
 
-useEffect(() => {
-  const query =
-    (typeof searchQuery === "string" ? searchQuery : "")
-      .trim()
-      .toLowerCase();
 
-  if (!query) {
-    setFilteredProducts(products);
-    return;
-  }
+  useEffect(() => {
+    const query =
+      (typeof searchQuery === "string" ? searchQuery : "")
+        .trim()
+        .toLowerCase();
 
-  const filtered = products.filter((product) => {
-    return (
-      String(product.title || "").toLowerCase().includes(query) ||
-      String(product.brand || "").toLowerCase().includes(query) ||
-      String(product.description || "").toLowerCase().includes(query)
+    if (!query) {
+      setFilteredProducts(products);
+      return;
+    }
+
+    const filtered = products.filter((product) => {
+      return (
+        String(product.title || "").toLowerCase().includes(query) ||
+        String(product.brand || "").toLowerCase().includes(query) ||
+        String(product.description || "").toLowerCase().includes(query)
+      );
+    });
+
+    setFilteredProducts(filtered);
+  }, [products, searchQuery]);
+
+
+  const sortLowToHigh = () => {
+    setFilteredProducts((prev) =>
+      [...prev].sort(
+        (a, b) => Number(a.offerPrice) - Number(b.offerPrice)
+      )
     );
-  });
+  };
 
-  setFilteredProducts(filtered);
-}, [products, searchQuery]);
-
-
-const sortLowToHigh = () => {
-  setFilteredProducts((prev) =>
-    [...prev].sort(
-      (a, b) => Number(a.offerPrice) - Number(b.offerPrice)
-    )
-  );
-};
-
-const sortHighToLow = () => {
-  setFilteredProducts((prev) =>
-    [...prev].sort(
-      (a, b) => Number(b.offerPrice) - Number(a.offerPrice)
-    )
-  );
-};
+  const sortHighToLow = () => {
+    setFilteredProducts((prev) =>
+      [...prev].sort(
+        (a, b) => Number(b.offerPrice) - Number(a.offerPrice)
+      )
+    );
+  };
 
 
 
@@ -72,28 +72,76 @@ const sortHighToLow = () => {
               <Link to="/products">Sales</Link>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <p className="hidden sm:block">Sort By:</p>
 
-              <ul
-                className={`${showFilter ? "flex" : "hidden"
-                  } md:flex flex-col md:flex-row gap-3 cursor-pointer absolute md:static top-12 right-0 bg-white md:bg-transparent border md:border-0 p-3 md:p-0 rounded-lg shadow md:shadow-none z-10`}
-              >
-                <li>Relevance</li>
-                <li>Newest</li>
-                <li>Popularity</li>
-                <li onClick={sortLowToHigh}>Price - Low to High</li>
-                <li onClick={sortHighToLow}>Price - High to Low</li>
-              </ul>
+            <div className="relative flex flex-wrap items-center gap-3 text-sm">
+              {/* Desktop: show sort options directly */}
+              <div className="hidden items-center gap-3 md:flex">
+                <p>Sort By:</p>
 
-              <button
-                onClick={() => setShowFilter(!showFilter)}
-                className="flex items-center gap-2 border rounded-full px-3 py-1 text-white"
-              >
-                Filter
-                <img src={assets.filterIcon} alt="" className="w-4 h-4 brightness-0 invert" />
-              </button>
+                <button
+                  type="button"
+                  onClick={sortLowToHigh}
+                  className="cursor-pointer hover:text-[#800020]"
+                >
+                  Price - Low to High
+                </button>
+
+                <button
+                  type="button"
+                  onClick={sortHighToLow}
+                  className="cursor-pointer hover:text-[#800020]"
+                >
+                  Price - High to Low
+                </button>
+              </div>
+
+            
+              
+{/* Mobile & tablet: Filter button on the right */}
+<div className="relative ml-auto -translate-y-8 md:hidden">
+  <button
+    type="button"
+    onClick={() => setShowFilter(!showFilter)}
+    aria-expanded={showFilter}
+    className="flex items-center gap-1.5 rounded-full border border-[#800020] bg-[#800020] px-3 py-1.5 text-xs text-white sm:px-3.5 sm:py-2 sm:text-sm"
+  >
+    Filter
+    <img
+      src={assets.filterIcon}
+      alt=""
+      className="h-3.5 w-3.5 brightness-0 invert sm:h-4 sm:w-4"
+    />
+  </button>
+
+  {showFilter && (
+    <div className="absolute right-0 bottom-full z-20 mt-2 flex min-w-[170px] flex-col gap-3 rounded-lg border bg-white p-3 text-sm shadow-lg">
+      <button
+        type="button"
+        onClick={() => {
+          sortLowToHigh();
+          setShowFilter(false);
+        }}
+        className="text-left hover:text-[#800020]"
+      >
+        Price - Low to High
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          sortHighToLow();
+          setShowFilter(false);
+        }}
+        className="text-left hover:text-[#800020]"
+      >
+        Price - High to Low
+      </button>
+    </div>
+  )}
+</div>
+
             </div>
+
 
           </div>
         </div>
@@ -108,7 +156,7 @@ const sortHighToLow = () => {
         </div>
 
         <div className='flex justify-center mt-3'>
-          <button className='w-[160px] cursor-pointer p-2 border-2 border-[#00354B] rounded-sm hover:bg-primary hover:text-white transition duration-300 ease-linear'>Load More</button>
+          <button className='w-[160px] cursor-pointer p-1 border-1 border-[#00354B] rounded-sm hover:bg-primary hover:text-white transition duration-300 ease-linear'>Load More</button>
         </div>
 
       </div>

@@ -10,6 +10,7 @@ const Navbar = () => {
     const { navigate, user, setUser, admin, setAdmin, setShowUserLogin, searchQuery, setSearchQuery, getCartCount, getWishlistCount } = useContext(AppContext);
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -156,14 +157,59 @@ const Navbar = () => {
                 )}
             </div>
 
-            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
+            {/* <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
 
                 <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="21" height="1.5" rx=".75" fill="#426287" />
                     <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#426287" />
                     <rect x="6" y="13" width="15" height="1.5" rx=".75" fill="#426287" />
                 </svg>
-            </button>
+            </button> */}
+
+            {/* Mobile Search + Menu Toggle */}
+            <div className="flex items-center gap-4 sm:hidden">
+                {/* Search Toggle */}
+                <button
+                    type="button"
+                    onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                    aria-label="Toggle search"
+                    className="flex items-center justify-center"
+                >
+                    <svg
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#800020"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m20 20-4-4" />
+                    </svg>
+                </button>
+
+                {/* Hamburger Toggle */}
+                <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    aria-label="Menu"
+                >
+                    <svg
+                        width="21"
+                        height="15"
+                        viewBox="0 0 21 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <rect width="21" height="1.5" rx=".75" fill="#d11711" />
+                        <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#990c0c" />
+                        <rect x="6" y="13" width="15" height="1.5" rx=".75" fill="#ca1508" />
+                    </svg>
+                </button>
+            </div>
+
 
             {/* Mobile Menu */}
             {open && (
@@ -273,6 +319,38 @@ const Navbar = () => {
 
                 </div>
             </div>
+
+            {/* Mobile Search Input */}
+            {mobileSearchOpen && (
+                <div className="absolute left-0 top-full z-50 w-full border-b border-gray-200 bg-white px-4 py-3 shadow-md sm:hidden">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            setMobileSearchOpen(false);
+                            navigate("/products");
+                        }}
+                        className="flex items-center gap-2 rounded-full border border-gray-300 px-3"
+                    >
+                        <input
+                            type="text"
+                            value={typeof searchQuery === "string" ? searchQuery : ""}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search products..."
+                            autoFocus
+                            className="w-full bg-transparent py-2 text-sm outline-none"
+                        />
+
+                        <button
+                            type="submit"
+                            aria-label="Search products"
+                            className="text-sm font-medium text-[#800020]"
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
+            )}
+
 
         </nav>
     )
