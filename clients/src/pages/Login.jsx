@@ -49,7 +49,7 @@ const Login = () => {
         <div className="flex flex-col justify-center px-8 sm:px-14 py-14 w-full">
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <div className="translate-x-0 sm:translate-x-0 lg:translate-x-30">
+                <div className="translate-x-5 sm:translate-x-0 lg:translate-x-30">
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 try {
