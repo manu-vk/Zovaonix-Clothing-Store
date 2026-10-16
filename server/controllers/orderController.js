@@ -131,7 +131,7 @@ const createOrder = async (req, res) => {
             items: verifiedItems,
             totalAmount: calculatedTotal,
             paymentMethod:
-                paymentMethod === "UPI" ? "UPI" : "COD",
+                paymentMethod === "UPI" ? "UPI" : "Cash on Delivery",
             address: address.trim(),
             phone: phone.trim(),
             orderId: orderId.trim(),
