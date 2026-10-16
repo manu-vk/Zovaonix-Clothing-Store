@@ -21,9 +21,9 @@ const createOrder = async (req, res) => {
         }
 
         // Backend must enforce UPI-only checkout.
-        if (paymentMethod !== "UPI") {
+        if (!["UPI", "COD", "Cash on Delivery"].includes(paymentMethod)) {
             return res.status(400).json({
-                message: "Only UPI payments are accepted",
+                message: "Invalid payment method",
             });
         }
 
@@ -130,14 +130,22 @@ const createOrder = async (req, res) => {
             userId,
             items: verifiedItems,
             totalAmount: calculatedTotal,
-            paymentMethod: "UPI",
+            paymentMethod:
+                paymentMethod === "UPI" ? "UPI" : "COD",
             address: address.trim(),
             phone: phone.trim(),
             orderId: orderId.trim(),
             status: "pending",
             paymentStatus: "pending",
         });
-
+        // COD orders do not require Razorpay.
+        if (paymentMethod !== "UPI") {
+            return res.status(201).json({
+                message: "COD order created successfully",
+                order,
+                paymentMethod: "COD",
+            });
+        }
         // Create the Razorpay order using the server-calculated total.
         const razorpayOrder = await razorpay.orders.create({
             amount: Math.round(calculatedTotal * 100),
@@ -267,8 +275,8 @@ const updateOrderStatus = async (req, res) => {
             "return_approved",
             "return_rejected"
         ];
-console.log("Received status:", status);
-console.log("Valid statuses:", validStatuses);
+        console.log("Received status:", status);
+        console.log("Valid statuses:", validStatuses);
         if (!validStatuses.includes(status)) {
             return res.status(400).json({
                 message: "Invalid status"
