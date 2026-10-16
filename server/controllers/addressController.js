@@ -63,4 +63,57 @@ const setDefaultAddress = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-module.exports = { addAddress, getAddress, deleteAddress, setDefaultAddress };
+
+const updateAddress = async (req, res) => {
+  try {
+    const {
+      fullName,
+      phoneNumber,
+      streetAddress,
+      city,
+      state,
+      pincode,
+      isDefault,
+    } = req.body;
+
+    const address = await Address.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
+
+    if (!address) {
+      return res.status(404).json({
+        message: "Address not found",
+      });
+    }
+
+    address.fullName = fullName;
+    address.phoneNumber = phoneNumber;
+    address.streetAddress = streetAddress;
+    address.city = city;
+    address.state = state;
+    address.pincode = pincode;
+
+    if (isDefault === true) {
+      await Address.updateMany(
+        { user: req.user.id },
+        { isDefault: false }
+      );
+
+      address.isDefault = true;
+    } else if (isDefault === false) {
+      address.isDefault = false;
+    }
+
+    await address.save();
+
+    res.json({
+      message: "Address updated successfully",
+      address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { addAddress, getAddress, deleteAddress, setDefaultAddress,updateAddress };
