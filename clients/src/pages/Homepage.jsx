@@ -218,7 +218,10 @@ const Homepage = () => {
               Refresh your wardrobe with timeless fashion and everyday essentials.
             </p>
 
-            <button className="w-fit cursor-pointer mt-4 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm md:text-base text-white bg-[#8B1E3F] rounded-md hover:bg-[#6F1732] transition">
+            <button
+              onClick={() => navigate('/products')}
+              className="w-fit cursor-pointer mt-4 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm md:text-base text-white bg-[#8B1E3F] rounded-md hover:bg-[#6F1732] transition"
+            >
               Shop Collection
             </button>
           </div>
