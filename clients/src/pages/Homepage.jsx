@@ -27,12 +27,14 @@ const Homepage = () => {
 
 
 
+
+
   const offersScrollRef = useRef(null);
 
   const scrollOffers = (direction) => {
     if (offersScrollRef.current) {
       offersScrollRef.current.scrollBy({
-        left: direction * offersScrollRef.current.clientWidth * 0.8,
+        left: direction * 300,
         behavior: "smooth",
       });
     }
@@ -41,7 +43,7 @@ const Homepage = () => {
   const offerProducts = featured.filter(
     (product) =>
       product.price > 0 &&
-      ((product.price - product.offerPrice) / product.price) * 100 >= 50
+      ((product.price - product.offerPrice) / product.price) * 100 >= 20
   );
 
 
@@ -130,13 +132,30 @@ const Homepage = () => {
             </button>
           </div>
         </div>
-        <div className='flex justify-center '>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-2 sm:gap-7 sm:p-3 md:gap-7 md:p-5 lg:gap-10 lg:p-6">
-            {featured.slice(0, 5).map(product => (
-              <FeaturedCard key={product._id} product={product} />
-            ))}
-          </div>
+        <div className="flex justify-center">
+  <div
+    ref={offersScrollRef}
+    className="w-full overflow-x-hidden sm:overflow-x-auto scroll-smooth"
+  >
+    <div className="
+      grid
+      grid-cols-2
+      gap-3 p-2
+      sm:flex sm:w-max sm:flex-nowrap sm:gap-7 sm:p-3
+      md:gap-7 md:p-5
+      lg:gap-10 lg:p-6
+    ">
+      {offerProducts.map(product => (
+        <div
+          key={product._id}
+          className="min-w-0 sm:w-[200px] sm:shrink-0"
+        >
+          <FeaturedCard product={product} />
         </div>
+      ))}
+    </div>
+  </div>
+</div>
 
 
 
