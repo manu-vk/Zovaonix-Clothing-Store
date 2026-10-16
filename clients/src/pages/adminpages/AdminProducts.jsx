@@ -71,6 +71,7 @@ const AdminProducts = () => {
         data.append("description", formData.description);
         data.append("rating", formData.rating);
         data.append("ratingCount", formData.ratingCount);
+        data.append("isLimitedEdition", String(formData.isLimitedEdition));
 
         formData.image.forEach(img => {
             if (img) data.append("image", img)
@@ -104,25 +105,26 @@ const AdminProducts = () => {
     //     });
     //     setShowAddForm(true);
     // };
-const handleEdit = (product) => {
-    setEditingProduct(product);
+    const handleEdit = (product) => {
+        setEditingProduct(product);
 
-    setFormData({
-        title: product.title || '',
-        price: product.price ?? '',
-        offerPrice: product.offerPrice ?? '',
-        category: product.category?._id || product.category || '',
-        brand: product.brand || '',
-        rating: product.rating ?? '',
-        ratingCount: product.ratingCount ?? '',
-        stock: product.stock ?? '',
-        description: product.description || '',
-        sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
-        image: [...product.image],
-    });
+        setFormData({
+            title: product.title || '',
+            price: product.price ?? '',
+            offerPrice: product.offerPrice ?? '',
+            category: product.category?._id || product.category || '',
+            brand: product.brand || '',
+            rating: product.rating ?? '',
+            ratingCount: product.ratingCount ?? '',
+            stock: product.stock ?? '',
+            description: product.description || '',
+            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
+            isLimitedEdition: product.isLimitedEdition ?? false,
+            image: [...product.image],
+        });
 
-    setShowAddForm(true);
-};
+        setShowAddForm(true);
+    };
 
     const handleDelete = (id) => {
         deleteProduct(id);
@@ -141,6 +143,7 @@ const handleEdit = (product) => {
             description: '',
             stock: '',
             sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+            isLimitedEdition: false,
         });
         setEditingProduct(null);
         setShowAddForm(false);
@@ -243,8 +246,8 @@ const handleEdit = (product) => {
                                         <label
                                             key={size}
                                             className={`flex items-center gap-2 border rounded-lg px-4 py-2 cursor-pointer ${formData.sizes.includes(size)
-                                                    ? 'border-primary bg-pink-50'
-                                                    : 'border-gray-300'
+                                                ? 'border-primary bg-pink-50'
+                                                : 'border-gray-300'
                                                 }`}
                                         >
                                             <input
@@ -256,6 +259,23 @@ const handleEdit = (product) => {
                                         </label>
                                     ))}
                                 </div>
+                            </div>
+                            {/* Limited Edition */}
+                            <div className="flex items-center gap-2 mt-4">
+                                <input
+                                    id="isLimitedEdition"
+                                    type="checkbox"
+                                    checked={formData.isLimitedEdition}
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            isLimitedEdition: e.target.checked
+                                        }))
+                                    }
+                                />
+                                <label htmlFor="isLimitedEdition">
+                                    Limited Edition
+                                </label>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Rating Count</label>
@@ -314,7 +334,7 @@ const handleEdit = (product) => {
                     </div>
                 ) : (
                     <div className="lg:max-h-[500px] lg:overflow-y-auto">
-    
+
                         {products.map((product) => (
                             <div key={product._id} className="grid grid-cols-9 items-center p-3 border-b hover:bg-gray-50">
                                 {/* image area is issued 💡: db issue */}

@@ -55,8 +55,9 @@ const ProductCard = ({ product }) => {
         </p>
         <p className="text-gray-600 text-sm mt-3 leading-6">
           {product.description
-            ? product.description.split(/\s+/).slice(0, 3).join(' ') +
-            (product.description.trim().split(/\s+/).length > 3 ? '...' : '')
+            ? product.description.length > 15
+              ? product.description.slice(0, 15) + '...'
+              : product.description
             : ''}
         </p>
       </div>
