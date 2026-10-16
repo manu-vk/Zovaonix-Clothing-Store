@@ -236,6 +236,10 @@ const AdminProducts = () => {
                                 <label className="block text-sm font-medium mb-1">Rating</label>
                                 <input id="rating" value={formData.rating} onChange={handleInputChange} type="number" step="0.1" max="5" placeholder="Rating" className="w-full p-2 border rounded" />
                             </div>
+                             <div>
+                                <label className="block text-sm font-medium mb-1">Rating Count</label>
+                                <input id="ratingCount" value={formData.ratingCount} onChange={handleInputChange} type="number" placeholder="Rating count" className="w-full p-2 border rounded" />
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
                                     Available Sizes *
@@ -277,10 +281,7 @@ const AdminProducts = () => {
                                     Limited Edition
                                 </label>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Rating Count</label>
-                                <input id="ratingCount" value={formData.ratingCount} onChange={handleInputChange} type="number" placeholder="Rating count" className="w-full p-2 border rounded" />
-                            </div>
+                           
                         </div>
 
                         <div>
