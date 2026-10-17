@@ -70,7 +70,7 @@ const Register = () => {
           <div className="relative h-full min-h-[600px] overflow-hidden rounded-[200px_10px_200px_0]">
 
             <img
-              src={assets.clothingBanner2}
+              src={assets.titleimage}
               alt="Zovaonix clothing collection"
               className="absolute inset-0 w-full h-full object-cover"
             />
