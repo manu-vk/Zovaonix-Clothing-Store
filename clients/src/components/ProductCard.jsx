@@ -80,7 +80,7 @@ const ProductCard = ({ product }) => {
 
       <button
         onClick={() => addToCart(product._id)}
-        className="w-full cursor-pointer mt-2 sm:mt-3 p-1 sm:p-2 text-xs sm:text-sm text-white bg-[#4A0015] rounded-md hover:bg-[#65001B] transition"
+        className="w-full cursor-pointer mt-2 sm:mt-3 p-1 sm:p-2 text-xs sm:text-sm text-white bg-[#000000] rounded-md hover:bg-[#65001B] transition"
       >
         Add to Cart
       </button>

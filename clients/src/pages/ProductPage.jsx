@@ -103,7 +103,7 @@ const ProductPage = () => {
     type="button"
     onClick={() => setShowFilter(!showFilter)}
     aria-expanded={showFilter}
-    className="flex items-center gap-1.5 rounded-full border border-[#800020] bg-[#800020] px-3 py-1.5 text-xs text-white sm:px-3.5 sm:py-2 sm:text-sm"
+    className="flex items-center gap-1.5 rounded-full border border-[#000000] bg-[#000000] px-3 py-1.5 text-xs text-white sm:px-3.5 sm:py-2 sm:text-sm"
   >
     Filter
     <img

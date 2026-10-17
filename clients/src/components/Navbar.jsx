@@ -22,9 +22,25 @@ const Navbar = () => {
     return (
         <nav className="z-50 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
 
-            <NavLink to='/'>
-                <h3 className='text-[#6e1f33] font-rethink font-bold text-2xl'>Zovaonyx</h3>
-            </NavLink>
+            {/* Brand: centered on mobile, normal position on desktop */}
+           <NavLink
+    to="/"
+    className="absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0"
+>
+    <div className="flex flex-col items-center justify-center leading-none">
+        <h3
+            className="text-black font-normal text-2xl sm:text-3xl whitespace-nowrap"
+            style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}
+        >
+            ZOVAONYX
+        </h3>
+
+        <span className="mt-1 text-[8px] sm:text-[9px] font-medium tracking-[0.35em] text-black"
+        style={{ fontFamily: '"Didot", "Bodoni MT", "Times New Roman", serif' }}>
+            FASHION
+        </span>
+    </div>
+</NavLink>
 
             {/* Desktop Menu */}
             <div className="hidden sm:flex items-center gap-8">
@@ -167,8 +183,31 @@ const Navbar = () => {
             </button> */}
 
             {/* Mobile Search + Menu Toggle */}
-            <div className="flex items-center gap-4 sm:hidden">
-                {/* Search Toggle */}
+            {/* Mobile Menu Toggle + Search */}
+            <div className="flex w-full items-center justify-between sm:hidden">
+                {/* Menu: left */}
+                <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    aria-label="Toggle menu"
+                    className="flex items-center justify-center"
+                >
+                    <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="black"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                    >
+                        <path d="M4 6h16" />
+                        <path d="M4 12h16" />
+                        <path d="M4 18h16" />
+                    </svg>
+                </button>
+
+                {/* Search: right */}
                 <button
                     type="button"
                     onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
@@ -176,36 +215,17 @@ const Navbar = () => {
                     className="flex items-center justify-center"
                 >
                     <svg
-                        width="21"
-                        height="21"
+                        width="22"
+                        height="22"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#800020"
+                        stroke="black"
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                     >
                         <circle cx="11" cy="11" r="7" />
                         <path d="m20 20-4-4" />
-                    </svg>
-                </button>
-
-                {/* Hamburger Toggle */}
-                <button
-                    type="button"
-                    onClick={() => setOpen(!open)}
-                    aria-label="Menu"
-                >
-                    <svg
-                        width="21"
-                        height="15"
-                        viewBox="0 0 21 15"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <rect width="21" height="1.5" rx=".75" fill="#d11711" />
-                        <rect x="8" y="6" width="13" height="1.5" rx=".75" fill="#990c0c" />
-                        <rect x="6" y="13" width="15" height="1.5" rx=".75" fill="#ca1508" />
                     </svg>
                 </button>
             </div>
@@ -246,7 +266,7 @@ const Navbar = () => {
             )}
             {/* --------------------------------------------------- */}
             {/* Mobile Bottom Navigation */}
-            <div className="sm:hidden fixed bottom-0 left-0 w-full z-[100] bg-[#800020]  border-t border-[#800020]/20 shadow-[0_-3px_12px_rgba(0,0,0,0.08)]  rounded-t-xl">
+            <div className="sm:hidden fixed bottom-0 left-0 w-full z-[100] bg-[#000000]  border-t border-[#800020]/20 shadow-[0_-3px_12px_rgba(0,0,0,0.08)]  rounded-t-xl">
                 <div className="flex items-center justify-around py-3">
 
                     <Link to="/" className="flex items-center justify-center">

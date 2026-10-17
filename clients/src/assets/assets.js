@@ -46,6 +46,7 @@ import categoriesIcon from './icons/categoriesIcon.png'
 
 import clothingBanner1 from './images/clothingBanner1.png'
 import clothingBanner2 from './images/clothingBanner2.png'
+import titleimage from './images/titleimage.png'
 import imageOne from './images/ec25b4b5e08d65f5173c15e1f91cde6f71eb4f06.jpg'
 import imageTwo from './images/9c74020bea95942fe85eb1d5ca6068cd932290d5.jpg'
 import imageThree from './images/9a95452ac3a33a3c661ab148aa613e68717d0300.jpg'
@@ -159,6 +160,7 @@ export const assets = {
     productTwenteen,
     clothingBanner1,
     clothingBanner2,
+    titleimage,
 }
 
 export const ourProducts = [

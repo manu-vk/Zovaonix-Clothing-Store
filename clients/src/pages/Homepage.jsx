@@ -5,6 +5,7 @@ import FeaturedCard from '../components/FeaturedCard.jsx'
 import { AppContext } from '../context/AppContext.jsx'
 import { AuthContext } from "../context/Authcontext.jsx";
 import { useNavigate } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 
 
@@ -60,15 +61,30 @@ const Homepage = () => {
   return (
     <>
       <title>Zovaonix Home</title>
-      <div className='m-5 py-5'>
+      <div className="w-full py-0">
 
-        <MainBanner />
+        {/* <MainBanner /> */}
+      <section className="relative left-1/2 -translate-x-1/2 w-screen h-[390px] sm:h-[400px] md:h-[500px] overflow-hidden">
+
+  <img
+  src={assets.titleimage}
+  alt="Zovaonyx Fashion"
+  className="home-title-image absolute inset-0 block"
+/>
+
+  <Link
+    to="/products"
+    className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 md:bottom-10 md:left-10 bg-black text-white px-6 py-3 text-sm tracking-wide hover:bg-neutral-800 transition"
+  >
+    SHOP NOW
+  </Link>
+
+</section>
 
 
 
-
-        <div className="mt-23 flex items-center justify-between">
-          <h1 className="text-[20px] font-semibold text-[#800020] md:text-[25px] lg:text-[35px]">
+        <div className="mt-10 flex items-center justify-between">
+          <h1 className="text-[20px] font-semibold text-[#000000] md:text-[25px] lg:text-[35px]">
             Shop the <span>Look</span>
           </h1>
 
@@ -150,7 +166,7 @@ const Homepage = () => {
 
 
         <div className="mt-23 flex justify-between items-center">
-          <h1 className="sm:text-[20px] md:text-[25px] lg:text-[35px] font-semibold text-[#800020]">
+          <h1 className="sm:text-[20px] md:text-[25px] lg:text-[35px] font-semibold text-[#000000]">
             Offers<span> Zone</span>
           </h1>
 

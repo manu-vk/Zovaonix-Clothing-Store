@@ -168,7 +168,7 @@ const Footer = () => {
             <div className="grid grid-cols-1 gap-8 px-6 py-10 lg:flex lg:justify-around">
 
                 <div>
-                    <h3 className="font-rethink text-3xl font-bold text-[#c54968]">
+                    <h3 className="font-rethink text-3xl font-bold text-[#000000]">
                         Zovaonyx
                     </h3>
                 </div>

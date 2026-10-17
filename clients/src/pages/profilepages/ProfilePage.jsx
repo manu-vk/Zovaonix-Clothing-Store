@@ -63,7 +63,7 @@ const ProfilePage = () => {
 
       {/* Tabs */}
       <div className="flex gap-4 mb-8">
-        <button className="bg-[#4A0015] text-white px-10 py-3 rounded-md font-medium">
+        <button className="bg-[#000000] text-white px-10 py-3 rounded-md font-medium">
           Profile
         </button>
 
