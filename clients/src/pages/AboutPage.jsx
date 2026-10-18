@@ -83,7 +83,7 @@ const AboutPage = () => {
 
                             <div className="overflow-hidden rounded-tl-[40px] rounded-br-[40px] sm:rounded-tl-[60px] sm:rounded-br-[60px]">
                                 <img
-                                    src={assets.clothingBanner2}
+                                    src={assets.titleimage}
                                     alt="Discover stylish clothing at Zovaonyx"
                                     className="h-44 w-full object-cover transition duration-500 hover:scale-105 sm:h-64 md:h-72 lg:h-80 xl:h-96"
                                 />
