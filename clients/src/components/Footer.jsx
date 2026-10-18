@@ -30,7 +30,7 @@ const Footer = () => {
                         reporting damaged or defective products.
                     </p>
 
-                    <p className="font-medium text-[#9e2543]">
+                    <p className="font-medium text-[#000000]">
                         Thank you for your understanding and cooperation.
                     </p>
                 </>
@@ -177,7 +177,7 @@ const Footer = () => {
 
                     <div>
                         <ul className="space-y-1">
-                            <li className="font-bold text-[#9e2543]">Pages</li>
+                            <li className="font-bold text-[#000000]">Pages</li>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/products">Products</Link></li>
                             <li><Link to="/gifting">Gifting</Link></li>
@@ -190,7 +190,7 @@ const Footer = () => {
 
                     <div>
                         <ul className="space-y-2">
-                            <li className="font-bold text-[#9e2543]">
+                            <li className="font-bold text-[#000000]">
                                 Quick Links
                             </li>
 
@@ -236,7 +236,7 @@ const Footer = () => {
                                     +91 9037243300
                                 </a>
                             </li>
-                            <li className="font-bold text-[#9e2543]">
+                            <li className="font-bold text-[#000000]">
                                 Social Media
                             </li>
 
@@ -292,7 +292,7 @@ const Footer = () => {
                         <div className="flex shrink-0 items-center justify-between border-b p-4">
                             <h2
                                 id="footer-modal-title"
-                                className="text-lg font-bold text-[#9e2543]"
+                                className="text-lg font-bold text-[#000000]"
                             >
                                 {modalContent[activeModal].title}
                             </h2>
@@ -317,7 +317,7 @@ const Footer = () => {
                             <button
                                 type="button"
                                 onClick={closeModal}
-                                className="w-full rounded-lg bg-[#9e2543] px-4 py-2.5 font-semibold text-white transition hover:bg-[#7e1d35]"
+                                className="w-full rounded-lg bg-[#000000] px-4 py-2.5 font-semibold text-white transition hover:bg-[#7e1d35]"
                             >
                                 Close
                             </button>

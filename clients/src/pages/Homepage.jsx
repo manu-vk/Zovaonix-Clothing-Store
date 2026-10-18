@@ -66,18 +66,20 @@ const Homepage = () => {
         {/* <MainBanner /> */}
       <section className="relative left-1/2 -translate-x-1/2 w-screen h-[390px] sm:h-[400px] md:h-[500px] overflow-hidden">
 
-  <img
-  src={assets.titleimage}
-  alt="Zovaonyx Fashion"
-  className="home-title-image absolute inset-0 block"
-/>
+  <div className="relative w-full h-full">
+    <img
+      src={assets.titleimage}
+      alt="Zovaonyx Fashion"
+      className="home-title-image absolute inset-0 w-full h-full object-cover object-center lg:object-contain"
+    />
 
-  <Link
-    to="/products"
-    className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 md:bottom-10 md:left-10 bg-black text-white px-6 py-3 text-sm tracking-wide hover:bg-neutral-800 transition"
-  >
-    SHOP NOW
-  </Link>
+   <Link
+  to="/products"
+  className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 md:bottom-10 md:left-10 z-10 bg-black text-white px-6 py-3 text-sm tracking-wide hover:bg-neutral-800 transition lg:hidden"
+>
+  SHOP NOW
+</Link>
+  </div>
 
 </section>
 

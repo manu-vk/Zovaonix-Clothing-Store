@@ -13,7 +13,7 @@ const AboutPage = () => {
 
                     {/* Page Heading */}
                     <div className="mb-6 sm:mb-8">
-                        <h1 className="text-2xl font-semibold text-[#800020] sm:text-3xl md:text-4xl lg:text-5xl">
+                        <h1 className="text-2xl font-semibold text-[#000000] sm:text-3xl md:text-4xl lg:text-5xl">
                             About Zovaonyx
                         </h1>
 
@@ -22,7 +22,7 @@ const AboutPage = () => {
                                 Home
                             </Link>
                             <span>{'>'}</span>
-                            <span className="text-[#800020]">About Us</span>
+                            <span className="text-[#000000]">About Us</span>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@ const AboutPage = () => {
                             <div className="pt-2">
                                 <Link
                                     to="/products"
-                                    className="inline-flex items-center justify-center rounded-md bg-[#800020] px-6 py-3 text-sm font-medium text-white transition duration-300 hover:bg-[#600018] sm:px-8 sm:text-base"
+                                    className="inline-flex items-center justify-center rounded-md bg-[#000000] px-6 py-3 text-sm font-medium text-white transition duration-300 hover:bg-[#600018] sm:px-8 sm:text-base"
                                 >
                                     Explore Our Collection
                                     <span className="ml-2" aria-hidden="true">
