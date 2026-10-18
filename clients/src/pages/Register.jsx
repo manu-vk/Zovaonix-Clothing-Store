@@ -94,7 +94,7 @@ const Register = () => {
 
 
         <div className="flex flex-col justify-center px-8 sm:px-14 py-14 w-full">
-          <div className="w-full flex justify-center lg:justify-start lg:translate-x-30">
+         <div className="w-full flex justify-center">
 
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
