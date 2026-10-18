@@ -8,7 +8,7 @@ const AdminProducts = () => {
     const { products, addProduct, updateProduct, deleteProduct, API_PRODUCT, productCount, categories } = useContext(AppContext);
     const [showAddForm, setShowAddForm] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
-  
+
     const [formData, setFormData] = useState({
         title: '',
         price: '',
@@ -156,7 +156,7 @@ const AdminProducts = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 p-3 sm:p-4 lg:p-6">
-                 
+
             <div className="mb-5 sm:mb-6">
                 <h1 className="text-xl sm:text-2xl font-bold">
                     Products Management
@@ -337,16 +337,19 @@ const AdminProducts = () => {
             )}
 
             <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="grid grid-cols-9 bg-gray-50 p-3 border-b font-medium">
+
+                {/* Table header */}
+                <div className="grid grid-cols-9 items-center border-b bg-gray-50 p-3 text-sm font-medium">
                     <div>Image</div>
                     <div className="col-span-2">Product</div>
                     <div>Category</div>
                     <div>Price</div>
                     <div>Offer</div>
                     <div>Stock</div>
-                    <div className="col-span-1">Description</div>
+                    <div>Description</div>
                     <div>Actions</div>
                 </div>
+
 
                 {products.length === 0 ? (
                     <div className="text-center p-12">
@@ -358,97 +361,97 @@ const AdminProducts = () => {
                         </button>
                     </div>
                 ) : (
-                  
-<div className="overflow-hidden rounded-lg bg-white shadow">
-    {products.length === 0 ? (
-        <div className="p-8 text-center sm:p-12">
-            <div className="mb-4 text-gray-400">📦</div>
-            <h3 className="mb-2 text-lg font-medium">
-                No products available
-            </h3>
-            <p className="mb-4 text-sm text-gray-500">
-                Add your first product to get started
-            </p>
-            <button
-                onClick={() => setShowAddForm(true)}
-                className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary-dull"
-            >
-                Add Product
-            </button>
-        </div>
-    ) : (
-        <div className="w-full overflow-x-auto">
-            <div className="min-w-[900px]">
-                {/* Table header */}
-                <div className="grid grid-cols-9 border-b bg-gray-50 p-3 text-sm font-medium">
-                    <div>Image</div>
-                    <div className="col-span-2">Product</div>
-                    <div>Category</div>
-                    <div>Price</div>
-                    <div>Offer</div>
-                    <div>Stock</div>
-                    <div>Description</div>
-                    <div>Actions</div>
-                </div>
 
-                {/* Product rows */}
-                <div className="lg:max-h-[500px] lg:overflow-y-auto">
-                    {products.map((product) => (
-                        <div
-                            key={product._id}
-                            className="grid grid-cols-9 items-center border-b p-3 text-sm transition-colors hover:bg-gray-50"
-                        >
-                            <div>
-                                <img
-                                    src={product.image?.[0]}
-                                    alt={product.title}
-                                    className="h-12 w-12 rounded object-cover"
-                                />
-                            </div>
-
-                            <div className="col-span-2 min-w-0 pr-2">
-                                <p className="truncate font-medium">
-                                    {product.title}
+                    <div className="overflow-hidden rounded-lg bg-white shadow">
+                        {products.length === 0 ? (
+                            <div className="p-8 text-center sm:p-12">
+                                <div className="mb-4 text-gray-400">📦</div>
+                                <h3 className="mb-2 text-lg font-medium">
+                                    No products available
+                                </h3>
+                                <p className="mb-4 text-sm text-gray-500">
+                                    Add your first product to get started
                                 </p>
-                                <p className="truncate text-gray-500">
-                                    {product.brand}
-                                </p>
-                            </div>
-
-                            <div className="truncate pr-2">
-                                {product.category?.categoryname || 'N/A'}
-                            </div>
-
-                            <div>₹{product.price}</div>
-                            <div>₹{product.offerPrice}</div>
-                            <div>{product.stock ?? 'N/A'}</div>
-
-                            <div className="truncate pr-2">
-                                {product.description || 'No description'}
-                            </div>
-
-                            <div className="flex gap-2">
                                 <button
-                                    onClick={() => handleEdit(product)}
-                                    className="rounded bg-yellow-100 px-3 py-1 text-yellow-700 hover:bg-yellow-200"
+                                    onClick={() => setShowAddForm(true)}
+                                    className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary-dull"
                                 >
-                                    Edit
-                                </button>
-
-                                <button
-                                    onClick={() => handleDelete(product._id)}
-                                    className="rounded bg-red-100 px-3 py-1 text-red-700 hover:bg-red-200"
-                                >
-                                    Delete
+                                    Add Product
                                 </button>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    )}
-</div>
+                        ) : (
+                            <div className="w-full overflow-x-auto">
+                                <div className="min-w-[900px]">
+                                    {/* Table header */}
+                                    <div className="grid grid-cols-9 border-b bg-gray-50 p-3 text-sm font-medium">
+                                        <div>Image</div>
+                                        <div className="col-span-2">Product</div>
+                                        <div>Category</div>
+                                        <div>Price</div>
+                                        <div>Offer</div>
+                                        <div>Stock</div>
+                                        <div>Description</div>
+                                        <div>Actions</div>
+                                    </div>
+
+                                    {/* Product rows */}
+                                    <div className="lg:max-h-[500px] lg:overflow-y-auto">
+                                        {products.map((product) => (
+                                            <div
+                                                key={product._id}
+                                                className="grid grid-cols-9 items-center border-b p-3 text-sm transition-colors hover:bg-gray-50"
+                                            >
+                                                <div>
+                                                    <img
+                                                        src={product.image?.[0]}
+                                                        alt={product.title}
+                                                        className="h-12 w-12 rounded object-cover"
+                                                    />
+                                                </div>
+
+                                                <div className="col-span-2 min-w-0 pr-2">
+                                                    <p className="truncate font-medium">
+                                                        {product.title}
+                                                    </p>
+                                                    <p className="truncate text-gray-500">
+                                                        {product.brand}
+                                                    </p>
+                                                </div>
+
+                                                <div className="truncate pr-2">
+                                                    {product.category?.categoryname || 'N/A'}
+                                                </div>
+
+                                                <div>₹{product.price}</div>
+                                                <div>₹{product.offerPrice}</div>
+                                                <div>{product.stock ?? 'N/A'}</div>
+
+                                                <div className="truncate pr-2">
+                                                    {product.description || 'No description'}
+                                                </div>
+
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        onClick={() => handleEdit(product)}
+                                                        className="rounded bg-yellow-100 px-3 py-1 text-yellow-700 hover:bg-yellow-200"
+                                                    >
+                                                        Edit
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handleDelete(product._id)}
+                                                        className="rounded bg-red-100 px-3 py-1 text-red-700 hover:bg-red-200"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                 )}
             </div>
