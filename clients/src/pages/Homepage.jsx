@@ -133,7 +133,7 @@ const Homepage = () => {
 
         <div className='flex justify-center items-center mt-4 text-center lg:text-2xl md:text-[20px] sm:text-sm text-black'>
           <div className='max-w-md px-4'>
-            <p>Discover your style with Zovaonix — trendy fashion, timeless looks, and everyday essentials designed to make you stand out. </p>
+            <p>Discover your style with Zovaonyx — trendy fashion, timeless looks, and everyday essentials designed to make you stand out. </p>
           </div>
         </div>
 
