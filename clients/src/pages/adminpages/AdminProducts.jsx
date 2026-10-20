@@ -119,7 +119,7 @@ const AdminProducts = () => {
             ratingCount: product.ratingCount ?? '',
             stock: product.stock ?? '',
             description: product.description || '',
-            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL'],
+            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL','3XL', 'Free Size'],
             isLimitedEdition: product.isLimitedEdition ?? false,
             image: [...product.image],
         });
