@@ -83,7 +83,7 @@ const addProduct = async (req, res) => {
     try {
         const sizes = req.body.sizes
             ? JSON.parse(req.body.sizes)
-            : ["S", "M", "L", "XL", "XXL"];
+            : [];
 
         const images = req.files
             ? await Promise.all(

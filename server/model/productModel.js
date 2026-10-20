@@ -15,10 +15,10 @@ const ProductSchema = new mongoose.Schema({
     description: { type: String, required: true },
     rating: { type: Number, required: true },
     ratingCount: { type: Number, required: true },
-    sizes: {
+   sizes: {
     type: [String],
-    enum: ["S", "M", "L", "XL", "XXL"],
-    default: ["S", "M", "L", "XL", "XXL"],
+    enum: ["S", "M", "L", "XL", "XXL", "3XL", "Free Size"],
+    default: ["S", "M", "L", "XL", "XXL", "3XL", "Free Size"],
 },
 isLimitedEdition: {
     type: Boolean,

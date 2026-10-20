@@ -32,10 +32,12 @@ const orderSchema = new mongoose.Schema({
                 required: true,
                 default: 1
             },
-            size: {
-                type: String,
-                enum: ["S", "M", "L", "XL", "XXL"],
-                default: null
+            sizes: {
+                type: [{
+                    type: String,
+                    enum: ["S", "M", "L", "XL", "XXL", "3XL", "Free Size"]
+                }],
+                default: []
             }
         }
     ],
@@ -50,7 +52,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested', 'returned','return_approved','return_rejected'],
+        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'return_requested', 'returned', 'return_approved', 'return_rejected'],
         default: 'pending'
     },
     address: {
