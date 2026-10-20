@@ -202,7 +202,7 @@ const ProductView = () => {
             <p className="font-medium mb-3">Select Size</p>
 
             <div className="flex flex-wrap gap-2">
-              {(product.sizes || ['S', 'M', 'L', 'XL', 'XXL']).map((size) => (
+              {(product.sizes || ['S', 'M', 'L', 'XL', 'XXL','3XL', 'Free Size']).map((size) => (
                 <button
                   key={size}
                   type="button"

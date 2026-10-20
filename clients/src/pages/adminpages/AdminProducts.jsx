@@ -20,7 +20,7 @@ const AdminProducts = () => {
         image: ['', '', ''],
         description: '',
         stock: '',
-        sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+        sizes: ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'],
     });
 
     // const categories = ['Eau De Parfum', 'Concentrated', 'Deodorants', 'Body Mist', 'Combo'];
@@ -143,7 +143,7 @@ const AdminProducts = () => {
             image: ['', '', ''],
             description: '',
             stock: '',
-            sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+            sizes: ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'],
             isLimitedEdition: false,
         });
         setEditingProduct(null);
@@ -260,7 +260,7 @@ const AdminProducts = () => {
                                 </label>
 
                                 <div className="flex flex-wrap gap-3">
-                                    {['S', 'M', 'L', 'XL', 'XXL'].map(size => (
+                                    {['S', 'M', 'L', 'XL', 'XXL','3XL', 'Free Size'].map(size => (
                                         <label
                                             key={size}
                                             className={`flex items-center gap-2 border rounded-lg px-4 py-2 cursor-pointer ${formData.sizes.includes(size)
