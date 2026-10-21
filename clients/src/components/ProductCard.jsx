@@ -53,13 +53,18 @@ const ProductCard = ({ product }) => {
         <p className="text-sm font-medium  text-black">
           {product.title}
         </p>
-        <p className="text-gray-600 text-sm mt-3 leading-6">
+        {/* <p className="text-gray-600 text-sm mt-3 leading-6">
           {product.description
             ? product.description.length > 15
               ? product.description.slice(0, 15) + '...'
               : product.description
             : ''}
-        </p>
+        </p> */}
+        <p className="text-gray-600 text-sm mt-3 leading-6">
+  {product.description
+    ? product.description.split(' ').slice(0, 2).join(' ') + '...'
+    : ''}
+</p>
       </div>
 
       {/* price */}
