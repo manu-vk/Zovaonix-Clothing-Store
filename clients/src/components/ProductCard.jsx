@@ -50,9 +50,14 @@ const ProductCard = ({ product }) => {
       {/* title */}
 
       <div className="mt-2">
-        <p className="text-sm font-medium  text-black">
+        {/* <p className="text-sm font-medium  text-black">
           {product.title}
-        </p>
+        </p> */}
+        <p className="text-sm font-medium text-black">
+  {product.title
+    ? product.title.split(' ').slice(0, 2).join(' ') + '...'
+    : ''}
+</p>
         {/* <p className="text-gray-600 text-sm mt-3 leading-6">
           {product.description
             ? product.description.length > 15
