@@ -24,7 +24,12 @@ const FeaturedCard = ({ product }) => {
 
 
             <div className="mt-2">
-                <p className="text-sm text-black font-medium">{product.title}</p>
+                {/* <p className="text-sm text-black font-medium">{product.title}</p> */}
+                <p className="text-sm font-medium text-black">
+  {product.title
+    ? product.title.split(' ').slice(0, 2).join(' ') + '...'
+    : ''}
+</p>
             </div>
 
             <div className="flex items-center gap-3 mt-2">
