@@ -10,6 +10,7 @@ const API_REGISTER = 'https://zovaonix-backend.onrender.com/api/user/register';
 const API_USER = 'https://zovaonix-backend.onrender.com/api/user';
 const API_CATEGORY = 'https://zovaonix-backend.onrender.com/api/category';
 const API_PRODUCT = 'https://zovaonix-backend.onrender.com/api/product';
+// const API_PRODUCT = 'http://localhost:5000/api/product';
 const API_ORDER = 'https://zovaonix-backend.onrender.com/api/order';
 
 export const AppContextProvider = ({ children }) => {

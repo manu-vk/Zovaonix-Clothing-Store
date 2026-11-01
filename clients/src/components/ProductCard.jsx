@@ -33,7 +33,7 @@ const ProductCard = ({ product }) => {
 
       {/* image */}
 
-      <div
+      {/* <div
         onClick={() => {
           navigate(`/products/${product._id}`);
           scrollTo(0, 0);
@@ -45,7 +45,32 @@ const ProductCard = ({ product }) => {
           alt={product.title}
           className="w-[160px] p-3 h-[160px] object-contain transition-transform duration-300 ease-linear group-hover:scale-110"
         />
+      </div> */}
+
+      {/* image */}
+      <div
+        onClick={() => {
+          navigate(`/products/${product._id}`);
+          scrollTo(0, 0);
+        }}
+        className="group relative flex justify-center items-center p-5 w-full h-[120px] sm:h-[160px] md:h-[200px] shadow-[0_0_3px_1px_#24242453] rounded-[24px_0_24px_0] transition-all duration-300 ease-linear hover:rounded-[0_24px_0_24px] overflow-hidden bg-[#F8F3F4] cursor-pointer"
+      >
+        <img
+          src={product?.image?.[0]}
+          alt={product.title}
+          className={`w-[160px] p-3 h-[160px] object-contain transition-transform duration-300 ease-linear group-hover:scale-110 ${product.soldOut ? 'opacity-50' : ''
+            }`}
+        />
+
+        {product.soldOut && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+            <span className="bg-red-600 text-white font-bold px-5 py-2 text-sm tracking-wider shadow-lg">
+              SOLD OUT
+            </span>
+          </div>
+        )}
       </div>
+
 
       {/* title */}
 
@@ -54,10 +79,10 @@ const ProductCard = ({ product }) => {
           {product.title}
         </p> */}
         <p className="text-sm font-medium text-black">
-  {product.title
-    ? product.title.split(' ').slice(0, 2).join(' ') + '...'
-    : ''}
-</p>
+          {product.title
+            ? product.title.split(' ').slice(0, 2).join(' ') + '...'
+            : ''}
+        </p>
         {/* <p className="text-gray-600 text-sm mt-3 leading-6">
           {product.description
             ? product.description.length > 15
@@ -66,10 +91,10 @@ const ProductCard = ({ product }) => {
             : ''}
         </p> */}
         <p className="text-gray-600 text-sm mt-3 leading-6">
-  {product.description
-    ? product.description.split(' ').slice(0, 2).join(' ') + '...'
-    : ''}
-</p>
+          {product.description
+            ? product.description.split(' ').slice(0, 2).join(' ') + '...'
+            : ''}
+        </p>
       </div>
 
       {/* price */}
@@ -88,12 +113,25 @@ const ProductCard = ({ product }) => {
 
       {/* cart button */}
 
-      <button
+      {/* <button
         onClick={() => addToCart(product._id)}
         className="w-full cursor-pointer mt-2 sm:mt-3 p-1 sm:p-2 text-xs sm:text-sm text-white bg-[#000000] rounded-md hover:bg-[#65001B] transition"
       >
         Add to Cart
-      </button>
+      </button> */}
+      
+<button
+  onClick={() => !product.soldOut && addToCart(product._id)}
+  disabled={product.soldOut}
+  className={`w-full mt-2 sm:mt-3 p-1 sm:p-2 text-xs sm:text-sm text-white rounded-md transition ${
+    product.soldOut
+      ? 'bg-gray-400 cursor-not-allowed'
+      : 'bg-[#000000] cursor-pointer hover:bg-[#65001B]'
+  }`}
+>
+  {product.soldOut ? 'Sold Out' : 'Add to Cart'}
+</button>
+
 
     </div>
   )

@@ -119,7 +119,7 @@ const AdminProducts = () => {
             ratingCount: product.ratingCount ?? '',
             stock: product.stock ?? '',
             description: product.description || '',
-            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL','3XL', 'Free Size'],
+            sizes: product.sizes || ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'],
             isLimitedEdition: product.isLimitedEdition ?? false,
             image: [...product.image],
         });
@@ -130,6 +130,18 @@ const AdminProducts = () => {
     const handleDelete = (id) => {
         deleteProduct(id);
     };
+    // const handleSoldOutToggle = async (product) => {
+    //     const data = new FormData();
+
+    //     data.append("soldOut", String(!product.soldOut));
+
+    //     await updateProduct(product._id, data);
+    // };
+    const handleSoldOutToggle = async (product) => {
+    await updateProduct(product._id, {
+        soldOut: !product.soldOut
+    });
+};
 
     const handleReset = () => {
         setFormData({
@@ -260,7 +272,7 @@ const AdminProducts = () => {
                                 </label>
 
                                 <div className="flex flex-wrap gap-3">
-                                    {['S', 'M', 'L', 'XL', 'XXL','3XL', 'Free Size'].map(size => (
+                                    {['S', 'M', 'L', 'XL', 'XXL', '3XL', 'Free Size'].map(size => (
                                         <label
                                             key={size}
                                             className={`flex items-center gap-2 border rounded-lg px-4 py-2 cursor-pointer ${formData.sizes.includes(size)
@@ -336,74 +348,83 @@ const AdminProducts = () => {
                 </div>
             )}
 
-        
-<div className="w-full overflow-x-auto rounded-lg bg-white shadow">
-    <div className="min-w-[900px]">
 
-        {/* Table heading */}
-        <div className="grid grid-cols-[70px_2fr_1fr_90px_90px_70px_2fr_130px] items-center gap-2 border-b bg-gray-50 p-3 text-sm font-semibold">
-            <div>Image</div>
-            <div>Product</div>
-            <div>Category</div>
-            <div>Price</div>
-            <div>Offer</div>
-            <div>Stock</div>
-            <div>Description</div>
-            <div>Actions</div>
-        </div>
+            <div className="w-full overflow-x-auto rounded-lg bg-white shadow">
+                <div className="min-w-[900px]">
 
-        {/* Product rows */}
-        <div className="lg:max-h-[500px] lg:overflow-y-auto">
-            {products.map((product) => (
-                <div
-                    key={product._id}
-                    className="grid grid-cols-[70px_2fr_1fr_90px_90px_70px_2fr_130px] items-center gap-2 border-b p-3 text-sm hover:bg-gray-50"
-                >
-                    <div>
-                        <img
-                            src={product.image?.[0]}
-                            alt={product.title}
-                            className="h-12 w-12 rounded object-cover"
-                        />
+                    {/* Table heading */}
+                    <div className="grid grid-cols-[70px_2fr_1fr_90px_90px_70px_2fr_130px] items-center gap-2 border-b bg-gray-50 p-3 text-sm font-semibold">
+                        <div>Image</div>
+                        <div>Product</div>
+                        <div>Category</div>
+                        <div>Price</div>
+                        <div>Offer</div>
+                        <div>Stock</div>
+                        <div>Description</div>
+                        <div>Actions</div>
                     </div>
 
-                    <div className="min-w-0">
-                        <p className="truncate font-medium">{product.title}</p>
-                        <p className="truncate text-gray-500">{product.brand}</p>
-                    </div>
+                    {/* Product rows */}
+                    <div className="lg:max-h-[500px] lg:overflow-y-auto">
+                        {products.map((product) => (
+                            <div
+                                key={product._id}
+                                className="grid grid-cols-[70px_2fr_1fr_90px_90px_70px_2fr_130px] items-center gap-2 border-b p-3 text-sm hover:bg-gray-50"
+                            >
+                                <div>
+                                    <img
+                                        src={product.image?.[0]}
+                                        alt={product.title}
+                                        className="h-12 w-12 rounded object-cover"
+                                    />
+                                </div>
 
-                    <div className="truncate">
-                        {product.category?.categoryname || 'N/A'}
-                    </div>
+                                <div className="min-w-0">
+                                    <p className="truncate font-medium">{product.title}</p>
+                                    <p className="truncate text-gray-500">{product.brand}</p>
+                                </div>
 
-                    <div>₹{product.price}</div>
-                    <div>₹{product.offerPrice}</div>
-                    <div>{product.stock ?? 'N/A'}</div>
+                                <div className="truncate">
+                                    {product.category?.categoryname || 'N/A'}
+                                </div>
 
-                    <div className="truncate">
-                        {product.description || 'No description'}
-                    </div>
+                                <div>₹{product.price}</div>
+                                <div>₹{product.offerPrice}</div>
+                                <div>{product.stock ?? 'N/A'}</div>
 
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => handleEdit(product)}
-                            className="rounded bg-yellow-100 px-2 py-1 text-yellow-700 hover:bg-yellow-200"
-                        >
-                            Edit
-                        </button>
+                                <div className="truncate">
+                                    {product.description || 'No description'}
+                                </div>
 
-                        <button
-                            onClick={() => handleDelete(product._id)}
-                            className="rounded bg-red-100 px-2 py-1 text-red-700 hover:bg-red-200"
-                        >
-                            Delete
-                        </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => handleEdit(product)}
+                                        className="rounded bg-yellow-100 px-2 py-1 text-yellow-700 hover:bg-yellow-200"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleSoldOutToggle(product)}
+                                        className={`rounded px-2 py-1 text-xs ${product.soldOut
+                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                            }`}
+                                    >
+                                        {product.soldOut ? 'Available' : 'Sold Out'}
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleDelete(product._id)}
+                                        className="rounded bg-red-100 px-2 py-1 text-red-700 hover:bg-red-200"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            ))}
-        </div>
-    </div>
-</div>
+            </div>
 
         </div>
     );
