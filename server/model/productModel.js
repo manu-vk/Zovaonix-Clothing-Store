@@ -24,6 +24,10 @@ isLimitedEdition: {
     type: Boolean,
     default: false,
 },
+soldOut: {
+    type: Boolean,
+    default: false
+},
     image: { type: [String], required: true },
 }, { timestamps: true });
 

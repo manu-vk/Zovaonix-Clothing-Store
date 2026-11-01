@@ -125,17 +125,71 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+// const updateProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         const updateData = {
+//             ...req.body,
+//         };
+//         if (req.body.soldOut !== undefined) {
+//             updateData.soldOut =
+//                 req.body.soldOut === true || req.body.soldOut === "true";
+//         }
+//         if (req.body.isLimitedEdition !== undefined) {
+//             updateData.isLimitedEdition =
+//                 req.body.isLimitedEdition === "true";
+//         }
+
+//         if (req.body.sizes) {
+//             updateData.sizes = JSON.parse(req.body.sizes);
+//         }
+
+//         if (req.files && req.files.length > 0) {
+//             const images = await Promise.all(
+//                 req.files.map(async (file) => {
+//                     const result = await uploadToCloudinary(file.buffer);
+//                     return result.secure_url;
+//                 })
+//             );
+
+//             updateData.image = images;
+//         }
+//         console.log("Incoming Body:", req.body);
+//         console.log("Update Data:", updateData);
+//         const updatedProduct = await productModel.findByIdAndUpdate(
+//             id,
+//             updateData,
+//             { new: true }
+//         );
+
+//         res.json(updatedProduct);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({
+//             message: error.message,
+//         });
+//     }
+// };
 const updateProduct = async (req, res) => {
     try {
+         console.log("UPDATE PRODUCT API CALLED");
         const { id } = req.params;
 
         const updateData = {
             ...req.body,
         };
+
+        if (req.body.soldOut !== undefined) {
+            updateData.soldOut =
+                req.body.soldOut === true || req.body.soldOut === "true";
+        }
+
         if (req.body.isLimitedEdition !== undefined) {
             updateData.isLimitedEdition =
                 req.body.isLimitedEdition === "true";
         }
+
         if (req.body.sizes) {
             updateData.sizes = JSON.parse(req.body.sizes);
         }
@@ -151,13 +205,17 @@ const updateProduct = async (req, res) => {
             updateData.image = images;
         }
 
+        console.log("Incoming Body:", req.body);
+        console.log("Update Data:", updateData);
+
         const updatedProduct = await productModel.findByIdAndUpdate(
             id,
             updateData,
-            { new: true }
+            { new: true, runValidators: true }
         );
 
         res.json(updatedProduct);
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
